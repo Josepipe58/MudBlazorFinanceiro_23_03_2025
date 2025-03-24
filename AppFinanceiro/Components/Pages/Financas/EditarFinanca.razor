@@ -1,0 +1,105 @@
+﻿@page "/financa/editar"
+
+@* <MudDialogProvider />
+<MudSnackbarProvider /> *@
+
+<MudStack Style="white-space: 400px" Class="justify-space-between mud-width-full" AlignItems="AlignItems.Stretch" >
+    <MudCard Elevation="25">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h5" Color="Color.Primary">Editar Finança</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudNumericField @bind-Value="Financa.Id" Disabled Label="Digite um Valor" Variant="Variant.Outlined" Margin="Margin.Normal"></MudNumericField>
+            <MudStack Class="justify-space-between mud-width-full">
+                <MudSelect @bind-Value="Financa.NomeFinanca" Placeholder="Selecione um Tipo de Finança" Label="Nome de Finança" Variant="Variant.Outlined" Margin="Margin.Normal">
+                    @foreach (var financa in ListaDeFinanca.ListaDeNomesDeFinancas())
+                    {
+                        <MudSelectItem Value="financa">@financa</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudStack>
+            <MudStack Class="justify-space-between mud-width-full">
+                <MudSelect @bind-Value="Financa.NomeOperacao" Placeholder="Selecione um Tipo de Operaçao" Label="Nome da Operação" Variant="Variant.Outlined" Margin="Margin.Normal">
+                    @foreach (var financa in ListaDeFinanca.ListaDeNomesDeOperacao())
+                    {
+                        <MudSelectItem Value="financa">@financa</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudStack>
+            <MudTextField @bind-Value="Financa.Descricao" Placeholder="Digite uma descrição..." Label="Descrição" Variant="Variant.Outlined"
+            Margin="Margin.Normal"></MudTextField>            
+            <MudTextField @bind-Value="@Financa.Valor" Label="Digite um Valor" Variant="Variant.Outlined"  Margin="Margin.Normal"></MudTextField>
+            <MudDatePicker @bind-Date="Financa.Data" Placeholder="Selecione a Data" Label="Data" Variant="Variant.Outlined" Margin="Margin.Normal"></MudDatePicker>
+            <MudSelect @bind-Value="Financa.Tipo" Placeholder="Selecione um Tipo de Finança" Label="Tipo de Finança" Variant="Variant.Outlined" Margin="Margin.Normal">
+                @foreach (var tipo in ListaDeFinanca.ListaDeTiposDeFinancas())
+                {
+                    <MudSelectItem Value="tipo">@tipo</MudSelectItem>
+                }
+            </MudSelect>
+            <br />
+            <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Editar">Editar Finança</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" Href="@($"/financa")">Voltar à Página Inicial</MudButton>
+        </MudCardContent>
+    </MudCard>
+</MudStack>
+@code {
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+    private Financa Financa{ get; set; } = new Financa();
+    private IEnumerable<Categoria> ListaDeCategorias = new List<Categoria>();   
+
+    protected override async Task OnInitializedAsync()
+    {
+        Financa = await financaService.ObterFinancaPorId(Id);
+        if (Financa.Id <= 0)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }       
+        await ObterCategorias();
+    }
+    private async Task<IEnumerable<Categoria>> ObterCategorias()
+    {
+        ListaDeCategorias = await categoriaService.ObterCategorias();
+        return ListaDeCategorias;
+    }
+
+    private async Task Editar()
+    {
+        if (string.IsNullOrWhiteSpace(Financa.Descricao))
+        {
+            if (string.IsNullOrWhiteSpace(Financa.Descricao) &&Financa.Valor <= 0)
+            {
+                await dialogService.ShowMessageBox("Atenção!","O nome da descrição é obrigatória e não pode estar vazio." +
+                "O valor não pode ser zero ou menor do que zero.", "Fechar");
+                NavigationManager.NavigateTo("/financa/editar");
+            }else
+            {
+                await dialogService.ShowMessageBox("Atenção!", "O nome da descrição é obrigatória e não pode estar vazio.", "Fechar");
+                NavigationManager.NavigateTo("/financa/editar"); 
+            }           
+            
+        }else if (Financa.Valor <= 0)
+        {
+            await dialogService.ShowMessageBox("Atenção!", "O valor não pode ser zero ou menor do que zero.", "Fechar");
+            NavigationManager.NavigateTo("/financa/editar");
+        }
+        else  if (Financa.Id > 0)
+        {
+            await financaService.EditarFinanca(Financa);
+            Financa = new Financa();
+            snackBar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            snackBar.Add($"Finança alterada com sucesso!", Severity.Info);
+            NavigationManager.NavigateTo("/financa");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("Not found");                  
+        }
+    }
+}

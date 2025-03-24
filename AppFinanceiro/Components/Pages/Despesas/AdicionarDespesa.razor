@@ -1,0 +1,125 @@
+﻿@page "/despesa/adicionar"
+
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudCardContent>
+    <MudText Typo="Typo.h5" Color="Color.Info">CADASTRAR DESPESA</MudText><br/>
+    <MudSelect @bind-Value="Despesa.NomeCategoria" Placeholder="Selecione uma Categoria" Label="Nome da Categoria" 
+    Variant="Variant.Outlined" Margin="Margin.Dense" MultiSelection="true">        
+        @foreach (var categoria in ListaDeCategorias.ToList())
+        {            
+            <MudSelectItem Value="categoria.NomeCategoria">@categoria.NomeCategoria</MudSelectItem>
+        }
+    </MudSelect>
+    <MudTextField @bind-Value="Despesa.Descricao" Placeholder="Digite uma descrição..." Label="Descrição" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+    <MudNumericField @bind-Value="Despesa.Valor" Label="Digite Um Valor" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField> 
+    <MudDatePicker @bind-Date="Despesa.Data" Label="Selecione Uma data" Variant="Variant.Outlined" Margin="Margin.Dense" editable="true" ></MudDatePicker>            
+    <MudSelect @bind-Value="Despesa.Tipo" Placeholder="Selecione um Tipo de Despesa" Label="Tipo de Despesa" Variant="Variant.Outlined" Margin="Margin.Dense">
+        @foreach (var tipo in ListaDeTipos.ToList())
+        {
+            <MudSelectItem Value="tipo">@tipo</MudSelectItem>
+        }
+    </MudSelect>
+    <br />
+    <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Adicionar">Adicionar Despesa</MudButton>
+    <MudButton Variant="Variant.Outlined" Color="Color.Info" Href="@($"/despesa")">Voltar à Página Inicial.</MudButton>
+</MudCardContent>
+<MudTable Elevation="0" Striped="false" Items="ListaDeDespesas" FixedHeader="@fixar_cabecalho" FixedFooter="@fixar_rodape" Height="@(fixar_cabecalho || fixar_rodape ?"400px":"")">    
+    <HeaderContent>
+        <MudTh>Código</MudTh>
+        <MudTh>Nome da Categoria</MudTh>
+        <MudTh>Descrição</MudTh>
+        <MudTh>Valor</MudTh>
+        <MudTh>Data</MudTh>
+        <MudTh>Tipo</MudTh>
+    </HeaderContent>
+    <RowTemplate Context="Despesa">
+        <MudTd DataLabel="Código">@Despesa.Id</MudTd>
+        <MudTd DataLabel="Nome da Categoria">@Despesa.NomeCategoria</MudTd>
+        <MudTd DataLabel="Descrição">@Despesa.Descricao</MudTd>
+        <MudTd DataLabel="Valor">@Despesa.Valor.ToString("c")</MudTd> 
+        <MudTd DataLabel="Data">@Convert.ToDateTime(@Despesa.Data).ToString("dd/MM/yyyy")</MudTd>
+        <MudTd DataLabel="Tipo">@Despesa.Tipo</MudTd>
+    </RowTemplate>
+    <FooterContent>
+        <MudTh>Código</MudTh>
+        <MudTh>Nome da Categoria</MudTh>
+        <MudTh>Descrição</MudTh>
+        <MudTh>Valor</MudTh>
+        <MudTh>Data</MudTh>
+        <MudTh>Tipo</MudTh>
+    </FooterContent>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[]{25, 50, 100}" />
+    </PagerContent>
+</MudTable>
+<MudSwitch @bind-Value="fixar_cabecalho" Color="Color.Primary">Fixar Cabeçalho</MudSwitch>
+<MudSwitch @bind-Value="fixar_rodape" Color="Color.Primary">Fixar Rodapé</MudSwitch>
+@code {
+    private Despesa Despesa{ get; set; } = new Despesa(); 
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    bool fixar_cabecalho = true;
+    bool fixar_rodape = false;
+
+    private IEnumerable<Despesa> ListaDeDespesas = new List<Despesa>();
+    private IEnumerable<Categoria> ListaDeCategorias = new List<Categoria>();
+    private string[] ListaDeTipos = { "Despesa de Casa", "Despesa do Banco",};
+
+    protected override async Task OnInitializedAsync()
+    {
+        Despesa.Data = DateTime.Today;
+        await ObterDespesas();
+        await ObterCategorias();
+    }
+
+    private async Task<IEnumerable<Despesa>> ObterDespesas()
+    {
+        ListaDeDespesas = await despesaService.ObterListaDeDespesas();
+        return ListaDeDespesas;
+    }
+
+    private async Task<IEnumerable<Categoria>> ObterCategorias()
+    {
+        ListaDeCategorias = await categoriaService.ObterCategorias();
+        return ListaDeCategorias;
+    }
+
+    private async Task Adicionar()
+    {
+        if (string.IsNullOrWhiteSpace(Despesa.Descricao))
+        {
+            if (string.IsNullOrWhiteSpace(Despesa.Descricao) && Despesa.Valor <= 0)
+            {
+                await dialogService.ShowMessageBox("Atenção!","O nome da descrição é obrigatória e não pode estar vazio." +
+                "O valor não pode ser zero ou menor do que zero.", "Fechar");
+                NavigationManager.NavigateTo("/despesa/adicionar");
+            }else
+            {
+                await dialogService.ShowMessageBox("Atenção!", "O nome da descrição é obrigatória e não pode estar vazio.", "Fechar");
+                NavigationManager.NavigateTo("/despesa/adicionar"); 
+            }           
+            
+        }else if (Despesa.Valor <= 0)
+        {
+            await dialogService.ShowMessageBox("Atenção!", "O valor não pode ser zero ou menor do que zero.", "Fechar");
+            NavigationManager.NavigateTo("/despesa/adicionar");
+        }
+        else  if (Despesa.Id <= 0)
+        {
+            await despesaService.AdicionarDespesa(Despesa);           
+            Despesa = new Despesa();
+            snackBar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            snackBar.Add("Despesa adicionada com sucesso!", Severity.Info);           
+            await ObterDespesas();
+        }
+        else
+        {
+            NavigationManager.NavigateTo("Not found");
+            await ObterDespesas();       
+        }
+    }
+}

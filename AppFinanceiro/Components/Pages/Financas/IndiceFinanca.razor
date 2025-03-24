@@ -1,0 +1,120 @@
+﻿@page "/financa"
+
+@* <MudDialogProvider />
+<MudSnackbarProvider /> *@
+
+<MudCard Elevation="25">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h4" GutterBottom="true" Color="Color.Primary">Página Inicial de Financas</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudButton Size="Size.Large" Variant="Variant.Text" Color="Color.Primary" Href="@($"financa/adicionar")">Adicionar Nova Financa</MudButton>
+</MudCard>
+<MudTable Elevation="0" Striped="false" Items="ListaDeFinancas" Filter="new Func<Financa, bool>(Pesquisar)" FixedHeader="@fixar_cabecalho"
+    FixedFooter="@fixar_rodape" Height="@(fixar_cabecalho || fixar_rodape ?"600px":"")">
+    <ToolBarContent>       
+        <MudTextField @bind-Value="criterio" Placeholder="Pesquisar financas..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
+                      IconSize="Size.Medium" Class="mt-0">
+        </MudTextField>        
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Código</MudTh>
+        <MudTh>Nome da Finança</MudTh>
+        <MudTh>Nome da Operaçao</MudTh>
+        <MudTh>Descrição</MudTh>
+        <MudTh>Valor</MudTh>        
+        <MudTh>Data</MudTh> 
+        <MudTh>Tipo</MudTh>
+        <MudTh>Operação</MudTh>
+    </HeaderContent>
+    <RowTemplate Context="Financa">
+        <MudTd DataLabel="Código">@Financa.Id</MudTd>
+        <MudTd DataLabel="Nome da Finança">@Financa.NomeFinanca</MudTd>
+        <MudTd DataLabel="Nome da Operaçao">@Financa.NomeOperacao</MudTd>
+        <MudTd DataLabel="Descrição">@Financa.Descricao</MudTd>
+        <MudTd DataLabel="Valor">@Financa.Valor.ToString("c")</MudTd>
+        <MudTd DataLabel="Data">@Convert.ToDateTime(@Financa.Data).ToString("dd/MM/yyyy")</MudTd>
+        <MudTd DataLabel="tipo">@Financa.Tipo</MudTd>
+        <MudTd DataLabel="">
+            <MudButton Variant="Variant.Text" Color="Color.Default" Href="@($"financa/editar?id={Financa.Id}")"
+                       StartIcon="@Icons.Material.Filled.ModeEditOutline">Editar</MudButton>
+            <MudButton Variant="Variant.Text" Color="Color.Default" @onclick="@(e=> ConfirmarExcluir(Financa.Id))" 
+                StartIcon="@Icons.Material.Filled.DeleteOutline">Excluir</MudButton>
+        </MudTd>
+    </RowTemplate>
+    <FooterContent>
+        <MudTh>Código</MudTh>
+        <MudTh>Nome da Finança</MudTh>
+        <MudTh>Nome da Operaçao</MudTh>
+        <MudTh>Descrição</MudTh>
+        <MudTh>Valor</MudTh>
+        <MudTh>Data</MudTh>
+        <MudTh>Tipo</MudTh>
+        <MudTh>Operação</MudTh>
+    </FooterContent>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[]{25, 50, 100}" />
+    </PagerContent>
+</MudTable>
+<MudSwitch @bind-Value="fixar_cabecalho" Color="Color.Primary">Fixar Cabeçalho</MudSwitch>
+<MudSwitch @bind-Value="fixar_rodape" Color="Color.Primary">Fixar Rodapé</MudSwitch>
+@code{
+    private Financa Financa { get; set; } = new Financa();
+    private IEnumerable<Financa> ListaDeFinancas = new List<Financa>();
+    private string criterio = "";
+    bool fixar_cabecalho = true;
+    bool fixar_rodape = false;    
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ObterFinancas();
+    }
+
+    private async Task<IEnumerable<Financa>> ObterFinancas()
+    {
+        ListaDeFinancas = await financaService.ObterListaDeFinancas();
+        return ListaDeFinancas;
+    }
+
+    private async Task ConfirmarExcluir(int id)
+    {
+        bool? result = await dialogService.ShowMessageBox(
+        $"Você tem certeza que deseja excluir esse item {id} ?",
+        $"Cuidado! Porque a exclusão dele, não pode ser desfeita!",
+        yesText: "Excluir", cancelText: "Cancelar");
+
+        if (result ?? false)
+        {
+            await Excluir(id);
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/financa");
+            await ObterFinancas();
+        }
+    }
+
+    private async Task Excluir(int id)
+    {
+        await financaService.ExcluirFinanca(id);
+        Financa = new Financa();
+        snackBar.Add("Finança excluída com sucesso.", Severity.Error);
+        NavigationManager.NavigateTo("/financa");
+        await ObterFinancas();
+    }
+
+    private bool Pesquisar(Financa financa)
+    {
+        if (string.IsNullOrWhiteSpace(criterio)) return true;
+
+        if (financa.NomeFinanca!.Contains(criterio, StringComparison.OrdinalIgnoreCase)
+            || financa.NomeOperacao!.Contains(criterio, StringComparison.OrdinalIgnoreCase)
+           || financa.Descricao!.Contains(criterio, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+        return false;
+    }
+}
+

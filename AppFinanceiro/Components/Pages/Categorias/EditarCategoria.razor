@@ -1,0 +1,60 @@
+﻿@page "/categoria/editar"
+
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudStack Style="white-space: 400px" Class="justify-space-between mud-width-full" AlignItems="AlignItems.Stretch" >
+    <MudCard Elevation="25">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h5" Color="Color.Primary">Gerenciar Categoria</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudNumericField @bind-Value="Categoria.Id" Disabled Label="Digite um Valor" Variant="Variant.Outlined" Margin="Margin.Normal"></MudNumericField>
+             <MudTextField @bind-Value="Categoria.NomeCategoria" Placeholder="Digite uma categoria..." Label="Nome da Categoria" Variant="Variant.Outlined" 
+            Margin="Margin.Normal"></MudTextField> 
+            <br />
+            <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Editar">Editar Categoria</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" Href="@($"/categoria")">Voltar à Página Inicial</MudButton>
+        </MudCardContent>
+    </MudCard>
+</MudStack>
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+    private Categoria Categoria { get; set; } = new Categoria();   
+
+    protected override async Task OnInitializedAsync()
+    {
+        Categoria = await categoriaService.ObterCategoriaPorId(Id);
+        if (Categoria.Id <= 0)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }       
+    }
+
+    private async Task Editar()
+    {
+        if (string.IsNullOrWhiteSpace(Categoria.NomeCategoria))
+        {
+            await dialogService.ShowMessageBox("Atenção!", "O nome da categoria é obrigatória e não pode estar vazio.", "Fechar");
+            NavigationManager.NavigateTo($"/categoria/editar");            
+        }
+        else  if (Categoria.Id > 0)
+        {
+            await categoriaService.EditarCategoria(Categoria);
+            Categoria = new Categoria();
+            snackBar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            snackBar.Add($"Categoria alterada com sucesso!", Severity.Info);
+            NavigationManager.NavigateTo("/categoria");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("Not found");
+        }
+    }
+}

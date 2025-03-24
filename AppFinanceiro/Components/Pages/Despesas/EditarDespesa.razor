@@ -1,0 +1,99 @@
+﻿@page "/despesa/editar"
+
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudStack Style="white-space: 400px" Class="justify-space-between mud-width-full" AlignItems="AlignItems.Stretch" >
+    <MudCard Elevation="25">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h5" Color="Color.Primary">Editar Despesa</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudNumericField @bind-Value="Despesa.Id" Disabled Label="Digite um Valor" Variant="Variant.Outlined" Margin="Margin.Normal"></MudNumericField>
+            <MudStack Class="justify-space-between mud-width-full">
+                <MudSelect @bind-Value="Despesa.NomeCategoria" Placeholder="Selecione uma Categoria" Label="Nome da Categoria" Variant="Variant.Outlined" Margin="Margin.Normal">
+                    @foreach (var item in ListaDeCategorias)
+                    {
+                        <MudSelectItem Value="item.NomeCategoria">@item.NomeCategoria</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudStack>
+            <MudTextField @bind-Value="Despesa.Descricao" Placeholder="Digite uma descrição..." Label="Descrição" Variant="Variant.Outlined"
+            Margin="Margin.Normal"></MudTextField>
+            <MudTextField @bind-Value="Despesa.Valor" Label="Digite um Valor" Variant="Variant.Outlined" Margin="Margin.Normal"></MudTextField>           
+            <MudDatePicker @bind-Date="Despesa.Data" Placeholder="Selecione a Data" Label="Data" Variant="Variant.Outlined" Margin="Margin.Normal"></MudDatePicker>
+           @*  for="@(() => Despesa.Data)" *@
+            <MudSelect @bind-Value="Despesa.Tipo" Placeholder="Selecione um Tipo de Despesa" Label="Tipo de Despesa" Variant="Variant.Outlined" Margin="Margin.Dense">
+                @foreach (var tipo in ListaDeTipos.ToList())
+                {
+                    <MudSelectItem Value="tipo">@tipo</MudSelectItem>
+                }
+            </MudSelect>
+            <br />
+            <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Editar">Editar Despesa</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" Href="@($"/despesa")">Voltar à Página Inicial</MudButton>
+        </MudCardContent>
+    </MudCard>
+</MudStack>
+@code {
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+    private Despesa Despesa{ get; set; } = new Despesa();
+    private IEnumerable<Categoria> ListaDeCategorias = new List<Categoria>();
+    private string[] ListaDeTipos = { "Despesa de Casa", "Despesa do Banco", };
+
+    protected override async Task OnInitializedAsync()
+    {
+        Despesa = await despesaService.ObterDespesaPorId(Id);
+        if (Despesa.Id <= 0)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }       
+        await ObterCategorias();
+    }
+    private async Task<IEnumerable<Categoria>> ObterCategorias()
+    {
+        ListaDeCategorias = await categoriaService.ObterCategorias();
+        return ListaDeCategorias;
+    }
+
+    private async Task Editar()
+    {
+        if (string.IsNullOrWhiteSpace(Despesa.Descricao))
+        {
+            if (string.IsNullOrWhiteSpace(Despesa.Descricao) && Despesa.Valor <= 0)
+            {
+                await dialogService.ShowMessageBox("Atenção!", "O nome da descrição é obrigatória e não pode estar vazio.\n" +
+                "O valor não pode ser zero ou menor do que zero.", "Fechar");
+                NavigationManager.NavigateTo("/despesa/editar");
+            }else
+            {
+                await dialogService.ShowMessageBox("Atenção!", "O nome da descrição é obrigatória e não pode estar vazio.", "Fechar");
+                NavigationManager.NavigateTo("/despesa/editar"); 
+            }           
+            
+        }else if (Despesa.Valor <= 0)
+        {
+            await dialogService.ShowMessageBox("Atenção!", "O valor não pode ser zero ou menor do que zero.", "Fechar");
+            NavigationManager.NavigateTo("/despesa/editar");
+        }
+        else  if (Despesa.Id > 0)
+        {
+            await despesaService.EditarDespesa(Despesa);
+            Despesa = new Despesa();
+            snackBar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            snackBar.Add($"Despesa alterada com sucesso!", Severity.Info);
+            NavigationManager.NavigateTo("/despesa");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("Not found");
+        }
+    }
+}

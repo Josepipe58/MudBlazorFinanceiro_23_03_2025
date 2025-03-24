@@ -1,0 +1,24 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.JSInterop
+@using MudBlazor
+@using MudBlazor.Services
+@using AppFinanceiro
+@using AppFinanceiro.Components
+@using Application.Abstractions
+@using Domain.Entities
+@using Infrastructure.Context
+@using Application.Listas
+
+@inject NavigationManager NavigationManager
+@inject IDialogService dialogService
+@inject ISnackbar snackBar
+
+@inject IDespesaService despesaService
+@inject IFinancaService financaService
+@inject ICategoriaService categoriaService
