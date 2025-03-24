@@ -13,11 +13,11 @@ namespace Infrastructure.Context
         public virtual DbSet<Despesa> TDespesas { get; set; }
         public virtual DbSet<Financa> TFinancas { get; set; }
 
-        /*
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
-        }*/
+        }
     }
 }
