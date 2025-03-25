@@ -8,7 +8,6 @@ namespace Application.Services
     {
         public ICategoriaRepository _categoriaRepository;
 
-
         public CategoriaService(ICategoriaRepository categoriaRepository)
         {
             _categoriaRepository = categoriaRepository;

@@ -1,4 +1,5 @@
 ﻿@page "/despesa"
+@using Application.Abstractions.ConsultasAbstractions
 
 <MudCard Elevation="25">    
     <MudCardHeader>
@@ -9,11 +10,43 @@
     </MudCardHeader> 
     <p><MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" Href="@($"despesa/adicionar")">Adicionar Nova Despesa</MudButton></p>
 </MudCard>
+<MudTable Items="ListaDeMeses" Elevation="0">
+    <HeaderContent>
+        <MudTh>Janeiro  </MudTh>
+        <MudTh>Fevereiro</MudTh>
+        <MudTh>Março    </MudTh>
+        <MudTh>Abril    </MudTh>
+        <MudTh>Maio     </MudTh>
+        <MudTh>Junho    </MudTh>
+        <MudTh>julho    </MudTh>
+        <MudTh>Agôsto   </MudTh>
+        <MudTh>Setembro</MudTh>
+        <MudTh>Outubro </MudTh>
+        <MudTh>Novembro</MudTh>
+        <MudTh>Dezembro</MudTh>
+        <MudTh>Total Geral</MudTh>
+    </HeaderContent>
+    <RowTemplate Context="Meses">
+        <MudTd DataLabel="Janeiro">@Meses.Janeiro</MudTd>
+        <MudTd DataLabel="Fevereiro">@Meses.Fevereiro</MudTd>
+        <MudTd DataLabel="Março">@Meses.Marco</MudTd>
+        <MudTd DataLabel="Abril">@Meses.Abril</MudTd>
+        <MudTd DataLabel="Maio">@Meses.Maio</MudTd>
+        <MudTd DataLabel="Junho">@Meses.Junho</MudTd>
+        <MudTd DataLabel="Julhoo">@Meses.Julho</MudTd>
+        <MudTd DataLabel="Agôsto">@Meses.Agosto</MudTd>
+        <MudTd DataLabel="Setembro">@Meses.Setembro</MudTd>
+        <MudTd DataLabel="Outubro">@Meses.Outubro</MudTd>
+        <MudTd DataLabel="Nonembro">@Meses.Novembro</MudTd>
+        <MudTd DataLabel="Dezembro">@Meses.Dezembro</MudTd>
+        <MudTd DataLabel="Dezembro">@Meses.TotalAno</MudTd>
+    </RowTemplate>
+</MudTable>
 <MudTable Elevation="0" Striped="false" Items="ListaDeDespesas" Filter="new Func<Despesa, bool>(Pesquisar)" FixedHeader="@fixar_cabecalho"
-    FixedFooter="@fixar_rodape" Height="@(fixar_cabecalho || fixar_rodape ?"600px":"")">
+FixedFooter="@fixar_rodape" Height="@(fixar_cabecalho || fixar_rodape ?"600px":"")">
     <ToolBarContent>        
         <MudTextField @bind-Value="criterio" Placeholder="Pesquisar despesas..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
-                      IconSize="Size.Medium" Class="mt-0">            
+        IconSize="Size.Medium" Class="mt-0">            
         </MudTextField>       
     </ToolBarContent>
     <HeaderContent>
@@ -36,7 +69,7 @@
             <MudButton Variant="Variant.Text" Color="Color.Default" Href="@($"despesa/editar?id={Despesa.Id}")" 
             StartIcon="@Icons.Material.Filled.ModeEditOutline">Editar</MudButton>
             <MudButton Variant="Variant.Text" Color="Color.Default" @onclick="@(e=> ConfirmarExcluir(Despesa.Id))" 
-                StartIcon="@Icons.Material.Filled.DeleteOutline">Excluir</MudButton>
+            StartIcon="@Icons.Material.Filled.DeleteOutline">Excluir</MudButton>
         </MudTd>
     </RowTemplate>
     <FooterContent>
@@ -56,14 +89,18 @@
 <MudSwitch @bind-Value="fixar_rodape" Color="Color.Primary">Fixar Rodapé</MudSwitch>
 @code{
     private Despesa Despesa { get; set; } = new Despesa();
-    private IEnumerable<Despesa> ListaDeDespesas = new List<Despesa>();
+    private IEnumerable<Despesa> ListaDeDespesas = new List<Despesa>();    
+    public Meses meses = new();
+    public ListaDeMeses ListaDeMeses = new();
+    public int ano;
     private string criterio = "";
     bool fixar_cabecalho = true;
     bool fixar_rodape = false; 
-    public double carteira;
+    public decimal carteira;
 
     protected override async Task OnInitializedAsync()
     {
+        ListaDeMeses = relatorioDespesaService.RelatorioDeDespesasGeraisService(2025);
         carteira = saldoFinanceiroCPIService.SaldoDaCarteira();
         await ObterDespesas();
     }

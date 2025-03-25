@@ -1,4 +1,4 @@
-﻿namespace Application.Listas
+﻿namespace Domain.Interfaces.RelatorioInterface
 {
     public class Meses
     {

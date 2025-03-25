@@ -1,9 +1,16 @@
 ﻿using Application.Abstractions;
-using Application.Consultas;
+using Application.Abstractions.ConsultasAbstractions;
+using Application.Abstractions.RelatoriosAbstractions;
 using Application.Services;
+using Application.Services.ConsultasService;
+using Application.Services.RelatoriosService;
 using Domain.Interfaces;
+using Domain.Interfaces.ConsultasInterface;
+using Domain.Interfaces.RelatorioInterface;
 using Infrastructure.Context;
 using Infrastructure.Repositories;
+using Infrastructure.Repositories.ConsultasRepository;
+using Infrastructure.Repositories.RelatorioRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,12 +28,14 @@ namespace Application.DependenciesApp
             services.AddScoped<ICategoriaService, CategoriaService>();
             services.AddScoped<IDespesaService, DespesaService>();
             services.AddScoped<IFinancaService, FinancaService>();
-
             services.AddScoped<ISaldoFinanceiroCPIService, SaldoFinanceiroCPIService>();
+            services.AddScoped<IRelatorioDespesaService, RelatorioDespesaService>();
 
             services.AddScoped<ICategoriaRepository, CategoriaRepository>();
             services.AddScoped<IDespesaRepository, DespesaRepository>();
             services.AddScoped<IFinancaRepository, FinancaRepository>();
+            services.AddScoped<ISaldoFinanceiroCPIRepository, SaldoFinanceiroCPIRepository>();
+            services.AddScoped<IRelatorioDespesaRepository, RelatorioDespesaRepository>();
 
             return services;
         }

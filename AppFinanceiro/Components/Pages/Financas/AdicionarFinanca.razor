@@ -1,4 +1,5 @@
 ﻿@page "/financa/adicionar"
+@using Application.Abstractions.ConsultasAbstractions
 
 <MudCardContent>
     <MudText Typo="Typo.h5" Color="Color.Info">CADASTRAR FINANÇAS</MudText>
@@ -79,9 +80,9 @@
 
     bool fixar_cabecalho = true;
     bool fixar_rodape = false;
-    public double saldoPoupanca;
-    public double saldoLCI;
-    public double saldoTotal;
+    public decimal saldoPoupanca;
+    public decimal saldoLCI;
+    public decimal saldoTotal;
 
     private IEnumerable<Financa> ListaDeFinancas = new List<Financa>();
    

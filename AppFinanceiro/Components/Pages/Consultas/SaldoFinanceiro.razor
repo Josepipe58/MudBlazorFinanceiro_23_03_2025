@@ -1,18 +1,57 @@
 ﻿@page "/saldofinanceiro"
+@using Application.Abstractions.ConsultasAbstractions
 
-<MudText Typo="Typo.h6" Color="Color.Default" Align="Align.Justify" GutterBottom>
+@* <MudText Typo="Typo.h6" Color="Color.Default" Align="Align.Justify" GutterBottom>
     <p>
         <a style="color:aqua">| Disponível na Carteira > @carteira.ToString("c") |</a>
         <a style="color:aliceblue">| Saldo da Poupança > @carteira.ToString("c") |</a>
         <a style="color:palegreen">| Saldo da LCI > @carteira.ToString("c") |</a>
     </p>
-</MudText>
+</MudText> *@
+<MudTable Items="ListaDeMeses" Elevation="0">
+    <HeaderContent>
+        <MudTh>Janeiro  </MudTh>
+        <MudTh>Fevereiro</MudTh>
+        <MudTh>Março    </MudTh>
+        <MudTh>Abril    </MudTh>
+        <MudTh>Maio     </MudTh>
+        <MudTh>Junho    </MudTh>
+        <MudTh>julho    </MudTh>
+        <MudTh>Agôsto   </MudTh>
+        <MudTh>Setembro</MudTh>
+        <MudTh>Outubro </MudTh>
+        <MudTh>Novembro</MudTh>
+        <MudTh>Dezembro</MudTh>
+        <MudTh>Total Geral</MudTh>
+    </HeaderContent>
+    <RowTemplate Context="Meses">
+        <MudTd DataLabel="Janeiro">@Meses.Janeiro</MudTd>
+        <MudTd DataLabel="Fevereiro">@Meses.Fevereiro</MudTd>
+        <MudTd DataLabel="Março">@Meses.Marco</MudTd>
+        <MudTd DataLabel="Abril">@Meses.Abril</MudTd>
+        <MudTd DataLabel="Maio">@Meses.Maio</MudTd>
+        <MudTd DataLabel="Junho">@Meses.Junho</MudTd>
+        <MudTd DataLabel="Julhoo">@Meses.Julho</MudTd>
+        <MudTd DataLabel="Agôsto">@Meses.Agosto</MudTd>
+        <MudTd DataLabel="Setembro">@Meses.Setembro</MudTd>
+        <MudTd DataLabel="Outubro">@Meses.Outubro</MudTd>
+        <MudTd DataLabel="Nonembro">@Meses.Novembro</MudTd>
+        <MudTd DataLabel="Dezembro">@Meses.Dezembro</MudTd>
+        <MudTd DataLabel="Dezembro">@Meses.TotalAno</MudTd>
+    </RowTemplate>    
+</MudTable>
 @code {
     public SaldoFinanceiroCPIService CarteiraService = new();
-    public double carteira;
+    public decimal carteira;
+
+    public int ano;    
+    public Meses meses = new();
+
+    public ListaDeMeses ListaDeMeses = new();
 
     protected override void OnInitialized()
     {
         carteira = saldoFinanceiroCPIService.SaldoDaCarteira();
+        ListaDeMeses = relatorioDespesaService.RelatorioDeDespesasGeraisService(2025);
     }
 }

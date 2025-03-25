@@ -1,4 +1,5 @@
 ﻿@page "/despesa/adicionar"
+@using Application.Abstractions.ConsultasAbstractions
 
 <MudCardContent>
     <MudText Typo="Typo.h5" Color="Color.Info">CADASTRAR DESPESA</MudText>
@@ -65,7 +66,7 @@
 
     bool fixar_cabecalho = true;
     bool fixar_rodape = false;
-    public double carteira;
+    public decimal carteira;
 
     private IEnumerable<Despesa> ListaDeDespesas = new List<Despesa>();
     private IEnumerable<Categoria> ListaDeCategorias = new List<Categoria>();

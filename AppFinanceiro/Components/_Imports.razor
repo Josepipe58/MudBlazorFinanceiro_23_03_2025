@@ -1,21 +1,24 @@
 ﻿@using System.Net.Http
 @using System.Net.Http.Json
+@using AppFinanceiro
+@using AppFinanceiro.Components
+@using AppFinanceiro.Components.Pages.Consultas
+@using Application.Abstractions
+@using Application.Abstractions.ConsultasAbstractions
+@using Application.Abstractions.RelatoriosAbstractions
+@using Application.Listas
+@using Application.Services.ConsultasService
+@using Domain.Entities
+@using Domain.Interfaces.RelatorioInterface
+@using Infrastructure.Context
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
-@using static Microsoft.AspNetCore.Components.Web.RenderMode
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.JSInterop
 @using MudBlazor
 @using MudBlazor.Services
-@using AppFinanceiro
-@using AppFinanceiro.Components
-@using Application.Abstractions
-@using Domain.Entities
-@using Infrastructure.Context
-@using Application.Listas
-@using Application.Consultas
-@using AppFinanceiro.Components.Pages.Consultas
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
 
 @inject NavigationManager NavigationManager
 @inject IDialogService dialogService
@@ -24,5 +27,5 @@
 @inject IDespesaService despesaService
 @inject IFinancaService financaService
 @inject ICategoriaService categoriaService
-
 @inject ISaldoFinanceiroCPIService saldoFinanceiroCPIService
+@inject IRelatorioDespesaService relatorioDespesaService

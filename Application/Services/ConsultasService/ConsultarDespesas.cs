@@ -2,7 +2,7 @@
 using Domain.Entities;
 using Application.Listas;
 
-namespace Application.Consultas
+namespace Application.Services.ConsultasService
 {
     public static class ConsultarDespesas
     {/*

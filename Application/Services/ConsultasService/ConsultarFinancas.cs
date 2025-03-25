@@ -1,4 +1,4 @@
-﻿namespace Application.Consultas
+﻿namespace Application.Services.ConsultasService
 {
     public static class ConsultarFinancas
     {/*
