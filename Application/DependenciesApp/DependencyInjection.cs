@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions;
+using Application.Consultas;
 using Application.Services;
 using Domain.Interfaces;
 using Infrastructure.Context;
@@ -20,7 +21,8 @@ namespace Application.DependenciesApp
             services.AddScoped<ICategoriaService, CategoriaService>();
             services.AddScoped<IDespesaService, DespesaService>();
             services.AddScoped<IFinancaService, FinancaService>();
-            
+
+            services.AddScoped<ISaldoFinanceiroCPIService, SaldoFinanceiroCPIService>();
 
             services.AddScoped<ICategoriaRepository, CategoriaRepository>();
             services.AddScoped<IDespesaRepository, DespesaRepository>();

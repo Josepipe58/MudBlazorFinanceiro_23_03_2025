@@ -18,8 +18,7 @@
             var listaDetipos = new List<string>()
             {
                 "Receita",
-                "Débito da Poupança",                
-                "Depósito no Pix",
+                "Débito da Poupança",  
                 "Depósito",
                 "Saldo da Carteira",
                 "Saldo da Poupança",

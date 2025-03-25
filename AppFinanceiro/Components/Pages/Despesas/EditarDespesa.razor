@@ -1,8 +1,5 @@
 ﻿@page "/despesa/editar"
 
-<MudDialogProvider />
-<MudSnackbarProvider />
-
 <MudStack Style="white-space: 400px" Class="justify-space-between mud-width-full" AlignItems="AlignItems.Stretch" >
     <MudCard Elevation="25">
         <MudCardHeader>
@@ -46,7 +43,7 @@
     private int Id { get; set; }
     private Despesa Despesa{ get; set; } = new Despesa();
     private IEnumerable<Categoria> ListaDeCategorias = new List<Categoria>();
-    private string[] ListaDeTipos = { "Despesa de Casa", "Despesa do Banco", };
+    private string[] ListaDeTipos = { "Despesa de Casa", "Despesa de Banco", };
 
     protected override async Task OnInitializedAsync()
     {
@@ -65,25 +62,8 @@
 
     private async Task Editar()
     {
-        if (string.IsNullOrWhiteSpace(Despesa.Descricao))
-        {
-            if (string.IsNullOrWhiteSpace(Despesa.Descricao) && Despesa.Valor <= 0)
-            {
-                await dialogService.ShowMessageBox("Atenção!", "O nome da descrição é obrigatória e não pode estar vazio.\n" +
-                "O valor não pode ser zero ou menor do que zero.", "Fechar");
-                NavigationManager.NavigateTo("/despesa/editar");
-            }else
-            {
-                await dialogService.ShowMessageBox("Atenção!", "O nome da descrição é obrigatória e não pode estar vazio.", "Fechar");
-                NavigationManager.NavigateTo("/despesa/editar"); 
-            }           
-            
-        }else if (Despesa.Valor <= 0)
-        {
-            await dialogService.ShowMessageBox("Atenção!", "O valor não pode ser zero ou menor do que zero.", "Fechar");
-            NavigationManager.NavigateTo("/despesa/editar");
-        }
-        else  if (Despesa.Id > 0)
+        if (Despesa.Id > 0 && !string.IsNullOrWhiteSpace(Despesa.NomeCategoria) && !string.IsNullOrWhiteSpace(Despesa.Descricao) 
+        && !string.IsNullOrWhiteSpace(Convert.ToString(Despesa.Data)) && !string.IsNullOrWhiteSpace(Despesa.Tipo) && Despesa.Valor > 0)
         {
             await despesaService.EditarDespesa(Despesa);
             Despesa = new Despesa();
@@ -93,7 +73,8 @@
         }
         else
         {
-            NavigationManager.NavigateTo("Not found");
+            await dialogService.ShowMessageBox("Atenção!", "Erro! Existe um ou mais de um campo, com dados vazios ou incorretos.", "Fechar");
+            NavigationManager.NavigateTo("/despesa/editar");
         }
     }
 }

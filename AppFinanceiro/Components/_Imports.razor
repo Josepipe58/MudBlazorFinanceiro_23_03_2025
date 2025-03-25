@@ -14,6 +14,8 @@
 @using Domain.Entities
 @using Infrastructure.Context
 @using Application.Listas
+@using Application.Consultas
+@using AppFinanceiro.Components.Pages.Consultas
 
 @inject NavigationManager NavigationManager
 @inject IDialogService dialogService
@@ -22,3 +24,5 @@
 @inject IDespesaService despesaService
 @inject IFinancaService financaService
 @inject ICategoriaService categoriaService
+
+@inject ISaldoFinanceiroCPIService saldoFinanceiroCPIService

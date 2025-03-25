@@ -1,8 +1,5 @@
 ﻿@page "/financa/editar"
 
-@* <MudDialogProvider />
-<MudSnackbarProvider /> *@
-
 <MudStack Style="white-space: 400px" Class="justify-space-between mud-width-full" AlignItems="AlignItems.Stretch" >
     <MudCard Elevation="25">
         <MudCardHeader>
@@ -71,35 +68,20 @@
 
     private async Task Editar()
     {
-        if (string.IsNullOrWhiteSpace(Financa.Descricao))
-        {
-            if (string.IsNullOrWhiteSpace(Financa.Descricao) &&Financa.Valor <= 0)
-            {
-                await dialogService.ShowMessageBox("Atenção!","O nome da descrição é obrigatória e não pode estar vazio." +
-                "O valor não pode ser zero ou menor do que zero.", "Fechar");
-                NavigationManager.NavigateTo("/financa/editar");
-            }else
-            {
-                await dialogService.ShowMessageBox("Atenção!", "O nome da descrição é obrigatória e não pode estar vazio.", "Fechar");
-                NavigationManager.NavigateTo("/financa/editar"); 
-            }           
-            
-        }else if (Financa.Valor <= 0)
-        {
-            await dialogService.ShowMessageBox("Atenção!", "O valor não pode ser zero ou menor do que zero.", "Fechar");
-            NavigationManager.NavigateTo("/financa/editar");
-        }
-        else  if (Financa.Id > 0)
+        if (Financa.Id > 0 && !string.IsNullOrWhiteSpace(Financa.NomeFinanca) && !string.IsNullOrWhiteSpace(Financa.NomeOperacao)  
+        && !string.IsNullOrWhiteSpace(Financa.Descricao)  && !string.IsNullOrWhiteSpace(Convert.ToString(Financa.Data)) 
+        && !string.IsNullOrWhiteSpace(Financa.Tipo) && Financa.Valor > 0)
         {
             await financaService.EditarFinanca(Financa);
             Financa = new Financa();
             snackBar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             snackBar.Add($"Finança alterada com sucesso!", Severity.Info);
-            NavigationManager.NavigateTo("/financa");
+            NavigationManager.NavigateTo("/financa");  
         }
         else
         {
-            NavigationManager.NavigateTo("Not found");                  
+            await dialogService.ShowMessageBox("Atenção!", "Erro! Existe um ou mais de um campo, com dados vazios ou incorretos.", "Fechar");
+            NavigationManager.NavigateTo("/financa/editar");
         }
     }
 }

@@ -1,21 +1,25 @@
 ﻿@page "/financa"
 
-@* <MudDialogProvider />
-<MudSnackbarProvider /> *@
-
 <MudCard Elevation="25">
     <MudCardHeader>
         <CardHeaderContent>
             <MudText Typo="Typo.h4" GutterBottom="true" Color="Color.Primary">Página Inicial de Financas</MudText>
+            <MudText>
+                <h3>
+                    <a style="color:darkgray">| Saldo da Poupança > @saldoPoupanca.ToString("c") |</a>
+                    <a style="color:darkgray">| Saldo da LCI > @saldoLCI.ToString("c") |</a>
+                    <a style="color:darkgray">| Saldo Total de Poupança e Investimento > @saldoTotal.ToString("c") |</a>
+                </h3>
+            </MudText>
         </CardHeaderContent>
-    </MudCardHeader>
-    <MudButton Size="Size.Large" Variant="Variant.Text" Color="Color.Primary" Href="@($"financa/adicionar")">Adicionar Nova Financa</MudButton>
+    </MudCardHeader> 
+    <p><MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" Href="@($"financa/adicionar")">Adicionar Novo Registro</MudButton></p>
 </MudCard>
 <MudTable Elevation="0" Striped="false" Items="ListaDeFinancas" Filter="new Func<Financa, bool>(Pesquisar)" FixedHeader="@fixar_cabecalho"
-    FixedFooter="@fixar_rodape" Height="@(fixar_cabecalho || fixar_rodape ?"600px":"")">
+FixedFooter="@fixar_rodape" Height="@(fixar_cabecalho || fixar_rodape ?"600px":"")">
     <ToolBarContent>       
         <MudTextField @bind-Value="criterio" Placeholder="Pesquisar financas..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
-                      IconSize="Size.Medium" Class="mt-0">
+        IconSize="Size.Medium" Class="mt-0">
         </MudTextField>        
     </ToolBarContent>
     <HeaderContent>
@@ -38,9 +42,9 @@
         <MudTd DataLabel="tipo">@Financa.Tipo</MudTd>
         <MudTd DataLabel="">
             <MudButton Variant="Variant.Text" Color="Color.Default" Href="@($"financa/editar?id={Financa.Id}")"
-                       StartIcon="@Icons.Material.Filled.ModeEditOutline">Editar</MudButton>
+            StartIcon="@Icons.Material.Filled.ModeEditOutline">Editar</MudButton>
             <MudButton Variant="Variant.Text" Color="Color.Default" @onclick="@(e=> ConfirmarExcluir(Financa.Id))" 
-                StartIcon="@Icons.Material.Filled.DeleteOutline">Excluir</MudButton>
+            StartIcon="@Icons.Material.Filled.DeleteOutline">Excluir</MudButton>
         </MudTd>
     </RowTemplate>
     <FooterContent>
@@ -64,10 +68,16 @@
     private IEnumerable<Financa> ListaDeFinancas = new List<Financa>();
     private string criterio = "";
     bool fixar_cabecalho = true;
-    bool fixar_rodape = false;    
+    bool fixar_rodape = false;
+    public double saldoPoupanca;
+    public double saldoLCI;
+    public double saldoTotal;
 
     protected override async Task OnInitializedAsync()
     {
+        saldoPoupanca = saldoFinanceiroCPIService.SaldoDaPoupanca();
+        saldoLCI = saldoFinanceiroCPIService.SaldoDeInvestimento();
+        saldoTotal = saldoPoupanca + saldoLCI;
         await ObterFinancas();
     }
 

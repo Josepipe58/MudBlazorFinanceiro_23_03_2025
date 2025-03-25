@@ -1,22 +1,20 @@
 ﻿@page "/despesa"
 
-@* <MudDialogProvider />
-<MudSnackbarProvider /> *@
-
-<MudCard Elevation="25">
+<MudCard Elevation="25">    
     <MudCardHeader>
         <CardHeaderContent>
-            <MudText Typo="Typo.h4" GutterBottom="true" Color="Color.Primary">Página Inicial de Despesas</MudText>
+            <MudText Typo="Typo.h4" Color="Color.Primary">Página Inicial de Despesas</MudText>
+            <h2><a style="color:darkgray">Disponível na Carteira > @carteira.ToString("c")</a></h2>
         </CardHeaderContent>
-    </MudCardHeader>
-    <MudButton Size="Size.Large" Variant="Variant.Text" Color="Color.Primary" Href="@($"despesa/adicionar")">Adicionar Nova Despesa</MudButton>
+    </MudCardHeader> 
+    <p><MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" Href="@($"despesa/adicionar")">Adicionar Nova Despesa</MudButton></p>
 </MudCard>
 <MudTable Elevation="0" Striped="false" Items="ListaDeDespesas" Filter="new Func<Despesa, bool>(Pesquisar)" FixedHeader="@fixar_cabecalho"
     FixedFooter="@fixar_rodape" Height="@(fixar_cabecalho || fixar_rodape ?"600px":"")">
-    <ToolBarContent>       
+    <ToolBarContent>        
         <MudTextField @bind-Value="criterio" Placeholder="Pesquisar despesas..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
-                      IconSize="Size.Medium" Class="mt-0">
-        </MudTextField>        
+                      IconSize="Size.Medium" Class="mt-0">            
+        </MudTextField>       
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Código</MudTh>
@@ -61,10 +59,12 @@
     private IEnumerable<Despesa> ListaDeDespesas = new List<Despesa>();
     private string criterio = "";
     bool fixar_cabecalho = true;
-    bool fixar_rodape = false;    
+    bool fixar_rodape = false; 
+    public double carteira;
 
     protected override async Task OnInitializedAsync()
     {
+        carteira = saldoFinanceiroCPIService.SaldoDaCarteira();
         await ObterDespesas();
     }
 

@@ -1,10 +1,14 @@
 ﻿@page "/financa/adicionar"
 
-@*  <MudDialogProvider />
- <MudSnackbarProvider /> *@
-
 <MudCardContent>
-    <MudText Typo="Typo.h5" Color="Color.Info">CADASTRAR FINANÇAS</MudText><br/>
+    <MudText Typo="Typo.h5" Color="Color.Info">CADASTRAR FINANÇAS</MudText>
+    <MudText>
+    <h3>
+        <a style="color:darkgray">| Saldo da Poupança > @saldoPoupanca.ToString("c") |</a>
+        <a style="color:darkgray">| Saldo da LCI > @saldoLCI.ToString("c") |</a>
+        <a style="color:darkgray">| Saldo Total de Poupança e Investimento > @saldoTotal.ToString("c") |</a>
+    </h3> 
+    </MudText><br/>
              <MudSelect @bind-Value="Financa.NomeFinanca" Placeholder="Selecione uma Finança" Label="Nome da Finança" Variant="Variant.Outlined" Margin="Margin.Dense">
                     @foreach (var financa in ListaDeFinanca.ListaDeNomesDeFinancas())
                     {
@@ -75,12 +79,18 @@
 
     bool fixar_cabecalho = true;
     bool fixar_rodape = false;
+    public double saldoPoupanca;
+    public double saldoLCI;
+    public double saldoTotal;
 
     private IEnumerable<Financa> ListaDeFinancas = new List<Financa>();
    
 
     protected override async Task OnInitializedAsync()
     {
+        saldoPoupanca = saldoFinanceiroCPIService.SaldoDaPoupanca();
+        saldoLCI = saldoFinanceiroCPIService.SaldoDeInvestimento();
+        saldoTotal = saldoPoupanca + saldoLCI;
         Financa.Data = DateTime.Today;
         await ObterFinancas();
     }
@@ -93,25 +103,9 @@
 
     private async Task Adicionar()
     {
-        if (string.IsNullOrWhiteSpace(Financa.Descricao))
-        {
-            if (string.IsNullOrWhiteSpace(Financa.Descricao) &&Financa.Valor <= 0)
-            {
-                await dialogService.ShowMessageBox("Atenção!","O nome da descrição é obrigatória e não pode estar vazio." +
-                "O valor não pode ser zero ou menor do que zero.", "Fechar");
-                NavigationManager.NavigateTo("/financa/adicionar");
-            }else
-            {
-                await dialogService.ShowMessageBox("Atenção!", "O nome da descrição é obrigatória e não pode estar vazio.", "Fechar");
-                NavigationManager.NavigateTo("/financa/adicionar"); 
-            }           
-            
-        }else if (Financa.Valor <= 0)
-        {
-            await dialogService.ShowMessageBox("Atenção!", "O valor não pode ser zero ou menor do que zero.", "Fechar");
-            NavigationManager.NavigateTo("/financa/adicionar");
-        }
-        else  if (Financa.Id <= 0)
+        if (Financa.Id <= 0 && !string.IsNullOrWhiteSpace(Financa.NomeFinanca) && !string.IsNullOrWhiteSpace(Financa.NomeOperacao)  
+        && !string.IsNullOrWhiteSpace(Financa.Descricao)  && !string.IsNullOrWhiteSpace(Convert.ToString(Financa.Data)) 
+        && !string.IsNullOrWhiteSpace(Financa.Tipo) && Financa.Valor > 0)
         {
             await financaService.AdicionarFinanca(Financa);           
             Financa = new Financa();
@@ -121,8 +115,8 @@
         }
         else
         {
-            NavigationManager.NavigateTo("Not found");
-            await ObterFinancas();       
+            await dialogService.ShowMessageBox("Atenção!", "Erro! Existe um ou mais de um campo, com dados vazios ou incorretos.", "Fechar");
+            NavigationManager.NavigateTo("/financa/adicionar");
         }
     }
 }

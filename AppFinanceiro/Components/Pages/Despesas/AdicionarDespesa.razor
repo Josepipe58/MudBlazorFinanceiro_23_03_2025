@@ -1,12 +1,13 @@
 ﻿@page "/despesa/adicionar"
 
-<MudDialogProvider />
-<MudSnackbarProvider />
-
 <MudCardContent>
-    <MudText Typo="Typo.h5" Color="Color.Info">CADASTRAR DESPESA</MudText><br/>
+    <MudText Typo="Typo.h5" Color="Color.Info">CADASTRAR DESPESA</MudText>
+    <MudText>
+        <h3><a style="color:darkgray">Disponível na Carteira > @carteira.ToString("c")</a></h3> 
+    </MudText>
+    <br/>
     <MudSelect @bind-Value="Despesa.NomeCategoria" Placeholder="Selecione uma Categoria" Label="Nome da Categoria" 
-    Variant="Variant.Outlined" Margin="Margin.Dense" MultiSelection="true">        
+    Variant="Variant.Outlined" Margin="Margin.Dense">        
         @foreach (var categoria in ListaDeCategorias.ToList())
         {            
             <MudSelectItem Value="categoria.NomeCategoria">@categoria.NomeCategoria</MudSelectItem>
@@ -64,13 +65,15 @@
 
     bool fixar_cabecalho = true;
     bool fixar_rodape = false;
+    public double carteira;
 
     private IEnumerable<Despesa> ListaDeDespesas = new List<Despesa>();
     private IEnumerable<Categoria> ListaDeCategorias = new List<Categoria>();
-    private string[] ListaDeTipos = { "Despesa de Casa", "Despesa do Banco",};
+    private string[] ListaDeTipos = { "Despesa de Casa", "Despesa de Banco",};
 
     protected override async Task OnInitializedAsync()
     {
+        carteira = saldoFinanceiroCPIService.SaldoDaCarteira();
         Despesa.Data = DateTime.Today;
         await ObterDespesas();
         await ObterCategorias();
@@ -90,25 +93,8 @@
 
     private async Task Adicionar()
     {
-        if (string.IsNullOrWhiteSpace(Despesa.Descricao))
-        {
-            if (string.IsNullOrWhiteSpace(Despesa.Descricao) && Despesa.Valor <= 0)
-            {
-                await dialogService.ShowMessageBox("Atenção!","O nome da descrição é obrigatória e não pode estar vazio." +
-                "O valor não pode ser zero ou menor do que zero.", "Fechar");
-                NavigationManager.NavigateTo("/despesa/adicionar");
-            }else
-            {
-                await dialogService.ShowMessageBox("Atenção!", "O nome da descrição é obrigatória e não pode estar vazio.", "Fechar");
-                NavigationManager.NavigateTo("/despesa/adicionar"); 
-            }           
-            
-        }else if (Despesa.Valor <= 0)
-        {
-            await dialogService.ShowMessageBox("Atenção!", "O valor não pode ser zero ou menor do que zero.", "Fechar");
-            NavigationManager.NavigateTo("/despesa/adicionar");
-        }
-        else  if (Despesa.Id <= 0)
+        if (Despesa.Id <= 0 && !string.IsNullOrWhiteSpace(Despesa.NomeCategoria) && !string.IsNullOrWhiteSpace(Despesa.Descricao) 
+        && !string.IsNullOrWhiteSpace(Convert.ToString(Despesa.Data)) && !string.IsNullOrWhiteSpace(Despesa.Tipo) && Despesa.Valor > 0)
         {
             await despesaService.AdicionarDespesa(Despesa);           
             Despesa = new Despesa();
@@ -118,8 +104,8 @@
         }
         else
         {
-            NavigationManager.NavigateTo("Not found");
-            await ObterDespesas();       
+            await dialogService.ShowMessageBox("Atenção!", "Erro! Existe um ou mais de um campo, com dados vazios ou incorretos.", "Fechar");
+            NavigationManager.NavigateTo("/despesa/adicionar");
         }
     }
 }
