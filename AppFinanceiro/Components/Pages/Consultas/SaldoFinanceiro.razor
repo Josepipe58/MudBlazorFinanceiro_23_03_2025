@@ -1,5 +1,4 @@
 ﻿@page "/saldofinanceiro"
-@using Application.Abstractions.ConsultasAbstractions
 
 @* <MudText Typo="Typo.h6" Color="Color.Default" Align="Align.Justify" GutterBottom>
     <p>
@@ -8,7 +7,9 @@
         <a style="color:palegreen">| Saldo da LCI > @carteira.ToString("c") |</a>
     </p>
 </MudText> *@
-<MudTable Items="ListaDeMeses" Elevation="0">
+
+@*
+    <MudTable Items="ListaDeMeses" Elevation="0">
     <HeaderContent>
         <MudTh>Janeiro  </MudTh>
         <MudTh>Fevereiro</MudTh>
@@ -40,7 +41,13 @@
         <MudTd DataLabel="Dezembro">@Meses.TotalAno</MudTd>
     </RowTemplate>    
 </MudTable>
+*@
+
+
 @code {
+   
+    
+    /*
     public SaldoFinanceiroCPIService CarteiraService = new();
     public decimal carteira;
 
@@ -53,5 +60,5 @@
     {
         carteira = saldoFinanceiroCPIService.SaldoDaCarteira();
         ListaDeMeses = relatorioDespesaService.RelatorioDeDespesasGeraisService(2025);
-    }
+    }*/
 }

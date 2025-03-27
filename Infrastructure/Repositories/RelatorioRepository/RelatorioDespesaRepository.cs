@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces.RelatorioInterface;
+﻿using Domain.Entities;
+using Domain.Interfaces.RelatorioInterface;
 using Infrastructure.Context;
 
 namespace Infrastructure.Repositories.RelatorioRepository
@@ -6,13 +7,13 @@ namespace Infrastructure.Repositories.RelatorioRepository
 
     public class RelatorioDespesaRepository(AppDbContext context) : Repository<RelatorioDespesaRepository>(context), IRelatorioDespesaRepository
     {
+        /*
         private static string _nomeDoMetodo = string.Empty;
         private static readonly string[] despesasExtrasInformatica = ["Despesas Extras", "Informática"];
         static readonly string[] caridadeDespExtrasInfo = ["Caridade", "Despesas Extras", "Informática"];
-
+        */
         public ListaDeMeses RelatorioDeDespesasGerais(int ano)
         {
-
             try
             {
                 Meses meses = new();
@@ -41,6 +42,7 @@ namespace Infrastructure.Repositories.RelatorioRepository
                     _context.TDespesas.Where(d => d.Data.Value.Year == ano && d.Data.Value.Month == 11).Select(d => d.Valor).Sum();
                 meses.Dezembro =
                     _context.TDespesas.Where(d => d.Data.Value.Year == ano && d.Data.Value.Month == 12).Select(d => d.Valor).Sum();
+
                 meses.TotalAno =
                     _context.TDespesas.Where(d => d.Data.Value.Year == ano).Select(d => d.Valor).Sum();
 
@@ -52,46 +54,7 @@ namespace Infrastructure.Repositories.RelatorioRepository
             {
                 return [];
             }
-            /*
-            try
-            {
-                Meses meses = new();
-                ListaDeMeses listaDeMeses = [];         
-                meses.Janeiro =
-                    _context.TDespesas.Where(d => d.Data.Year == ano && d.Data.Month == Convert.ToDateTime("Janeiro").Month).Select(d => d.Valor).Sum();
-                meses.Fevereiro = 
-                    _context.TDespesas.Where(d => d.Data.Year == ano && d.Data.Month == Convert.ToDateTime("Fevereiro").Month).Select(d => d.Valor).Sum();
-                meses.Marco =
-                    _context.TDespesas.Where(d => d.Data.Year == ano && d.Data.Month == Convert.ToDateTime("Março").Month).Select(d => d.Valor).Sum();
-                meses.Abril =
-                   _context.TDespesas.Where(d => d.Data.Year == ano && d.Data.Month == Convert.ToDateTime("Abril").Month).Select(d => d.Valor).Sum();
-                meses.Maio =
-                    _context.TDespesas.Where(d => d.Data.Year == ano && d.Data.Month == Convert.ToDateTime("Maio").Month).Select(d => d.Valor).Sum();
-                meses.Junho =
-                    _context.TDespesas.Where(d => d.Data.Year == ano && d.Data.Month == Convert.ToDateTime("Junho").Month).Select(d => d.Valor).Sum();
-                meses.Julho =
-                    _context.TDespesas.Where(d => d.Data.Year == ano && d.Data.Month == Convert.ToDateTime("Julho").Month).Select(d => d.Valor).Sum();
-                meses.Agosto =
-                    _context.TDespesas.Where(d => d.Data.Year == ano && d.Data.Month == Convert.ToDateTime("Agôsto").Month).Select(d => d.Valor).Sum();
-                meses.Setembro =
-                    _context.TDespesas.Where(d => d.Data.Year == ano && d.Data.Month == Convert.ToDateTime("Setembro").Month).Select(d => d.Valor).Sum();
-                meses.Outubro =
-                    _context.TDespesas.Where(d => d.Data.Year == ano && d.Data.Month == Convert.ToDateTime("Outubro").Month).Select(d => d.Valor).Sum();
-                meses.Novembro =
-                    _context.TDespesas.Where(d => d.Data.Year == ano && d.Data.Month == Convert.ToDateTime("Novembro").Month).Select(d => d.Valor).Sum();
-                meses.Dezembro =
-                    _context.TDespesas.Where(d => d.Data.Year == ano && d.Data.Month == Convert.ToDateTime("Dezembrro").Month).Select(d => d.Valor).Sum();
-                meses.TotalAno =
-                    _context.TDespesas.Where(d => d.Data.Year == ano).Select(d => d.Valor).Sum();
 
-                listaDeMeses.Add(meses);
-
-                return listaDeMeses;
-            }
-            catch (Exception)
-            {
-                return [];
-            }*/
         }
 
         /*

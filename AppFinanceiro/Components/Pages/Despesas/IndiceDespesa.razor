@@ -1,15 +1,25 @@
 ﻿@page "/despesa"
 @using Application.Abstractions.ConsultasAbstractions
+@using Application.ListasContext
 
-<MudCard Elevation="25">    
+<MudCardContent>    
     <MudCardHeader>
         <CardHeaderContent>
             <MudText Typo="Typo.h4" Color="Color.Primary">Página Inicial de Despesas</MudText>
-            <h2><a style="color:darkgray">Disponível na Carteira > @carteira.ToString("c")</a></h2>
+            <h2><a style="color:darkgray">Disponível na Carteira > @carteira.ToString("c")</a></h2><br/>            
         </CardHeaderContent>
     </MudCardHeader> 
-    <p><MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" Href="@($"despesa/adicionar")">Adicionar Nova Despesa</MudButton></p>
-</MudCard>
+</MudCardContent>
+<MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" Href="@($"despesa/adicionar")">Adicionar Nova Despesa</MudButton>
+<MudStack AlignItems="AlignItems.Start" Style="width: 600px">
+    <MudSelect T="Ano" Label="@("Ano Atual - " + Convert.ToString(ListaDeAnos[0].AnoDoCadastro = DateTime.Now.Year))" Variant="Variant.Outlined"
+               Style="width: 200px" ValueChanged="AnoSelecionado" Margin="Margin.Dense">
+        @foreach (var ano in ListaDeAnos)
+        {
+            <MudSelectItem T="Ano" Value="@ano">@ano.AnoDoCadastro</MudSelectItem>
+        }
+    </MudSelect>
+</MudStack>
 <MudTable Items="ListaDeMeses" Elevation="0">
     <HeaderContent>
         <MudTh>Janeiro  </MudTh>
@@ -88,11 +98,11 @@ FixedFooter="@fixar_rodape" Height="@(fixar_cabecalho || fixar_rodape ?"600px":"
 <MudSwitch @bind-Value="fixar_cabecalho" Color="Color.Primary">Fixar Cabeçalho</MudSwitch>
 <MudSwitch @bind-Value="fixar_rodape" Color="Color.Primary">Fixar Rodapé</MudSwitch>
 @code{
+    public Ano Ano { get; set; } = new();
     private Despesa Despesa { get; set; } = new Despesa();
-    private IEnumerable<Despesa> ListaDeDespesas = new List<Despesa>();    
-    public Meses meses = new();
-    public ListaDeMeses ListaDeMeses = new();
-    public int ano;
+    private IEnumerable<Despesa> ListaDeDespesas = new List<Despesa>(); 
+    public ListaDeMeses ListaDeMeses = new();   
+    public List<Ano> ListaDeAnos = new List<Ano>();    
     private string criterio = "";
     bool fixar_cabecalho = true;
     bool fixar_rodape = false; 
@@ -100,7 +110,9 @@ FixedFooter="@fixar_rodape" Height="@(fixar_cabecalho || fixar_rodape ?"600px":"
 
     protected override async Task OnInitializedAsync()
     {
-        ListaDeMeses = relatorioDespesaService.RelatorioDeDespesasGeraisService(2025);
+        //Conexão com listas em memória.
+        ListaDeAnos = ListsInMemory.TAnos();
+        ListaDeMeses = relatorioDespesaService.RelatorioDeDespesasGeraisService(Convert.ToInt32(DateTime.Now.Year));
         carteira = saldoFinanceiroCPIService.SaldoDaCarteira();
         await ObterDespesas();
     }
@@ -109,6 +121,11 @@ FixedFooter="@fixar_rodape" Height="@(fixar_cabecalho || fixar_rodape ?"600px":"
     {
         ListaDeDespesas = await despesaService.ObterListaDeDespesas();
         return ListaDeDespesas;
+    }
+
+    private void AnoSelecionado(Ano ano)
+    {
+        ListaDeMeses = relatorioDespesaService.RelatorioDeDespesasGeraisService(ano.AnoDoCadastro);
     }
 
     private async Task ConfirmarExcluir(int id)
@@ -150,4 +167,3 @@ FixedFooter="@fixar_rodape" Height="@(fixar_cabecalho || fixar_rodape ?"600px":"
         return false;
     }
 }
-
