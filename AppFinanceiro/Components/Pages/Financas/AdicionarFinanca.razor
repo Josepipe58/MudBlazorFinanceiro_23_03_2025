@@ -4,41 +4,41 @@
 <MudCardContent>
     <MudText Typo="Typo.h5" Color="Color.Info">CADASTRAR FINANÇAS</MudText>
     <MudText>
-        <h3>
-            <a style="color:darkgray">| Saldo da Poupança > @saldoPoupanca.ToString("c") |</a>
-            <a style="color:darkgray">| Saldo da LCI > @saldoLCI.ToString("c") |</a>
-            <a style="color:darkgray">| Saldo Total de Poupança e Investimento > @saldoTotal.ToString("c") |</a>
-        </h3> 
+    <h3>
+        <a style="color:darkgray">| Saldo da Poupança > @saldoPoupanca.ToString("c") |</a>
+        <a style="color:darkgray">| Saldo da LCI > @saldoLCI.ToString("c") |</a>
+        <a style="color:darkgray">| Saldo Total de Poupança e Investimento > @saldoTotal.ToString("c") |</a>
+    </h3> 
     </MudText><br/>
-    <MudSelect @bind-Value="Financa.NomeFinanca" Placeholder="Selecione uma Finança" Label="Nome da Finança" Variant="Variant.Outlined" Margin="Margin.Dense">
-        @foreach (var nomeDeFinanca in BancoDeListas.TNomeDeFinancas)
-        {
-            <MudSelectItem Value="nomeDeFinanca.Nome">@nomeDeFinanca.Nome</MudSelectItem>
-        }
-    </MudSelect>
-    <MudStack Class="justify-space-between mud-width-full">
-        <MudSelect @bind-Value="Financa.NomeOperacao" Placeholder="Selecione um Tipo de Operaçao" Label="Nome da Operação" Variant="Variant.Outlined" Margin="Margin.Dense">
-            @foreach (var nomeDeOperacao in BancoDeListas.TNomeDeOperacoes)
-            {
-                <MudSelectItem Value="nomeDeOperacao.Nome">@nomeDeOperacao.Nome</MudSelectItem>
-            }
-        </MudSelect>
-    </MudStack>
-    <MudTextField @bind-Value="Financa.Descricao" Placeholder="Digite uma descrição..." Label="Descrição" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
-    <MudNumericField @bind-Value="Financa.Valor" Label="Digite Um Valor" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField> 
-    <MudDatePicker @bind-Date="Financa.Data" Label="Selecione Uma data" Variant="Variant.Outlined" Margin="Margin.Dense" ></MudDatePicker>
-    <MudSelect @bind-Value="Financa.Tipo" Placeholder="Selecione um Tipo de Finança" Label="Tipo de Finança" Variant="Variant.Outlined" Margin="Margin.Dense">
-        @foreach (var nomeDeTipo in BancoDeListas.TNomeDeTipos)
-        {
-            <MudSelectItem Value="nomeDeTipo.Nome">@nomeDeTipo.Nome</MudSelectItem>
-        }
-    </MudSelect>             
-    <br />
-    <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Adicionar">Adicionar Finança</MudButton>
-    <MudButton Variant="Variant.Outlined" Color="Color.Info" Href="@($"/financa")">Voltar à Página Inicial.</MudButton>
-</MudCardContent>
+             <MudSelect @bind-Value="Financa.NomeFinanca" Placeholder="Selecione uma Finança" Label="Nome da Finança" Variant="Variant.Outlined" Margin="Margin.Dense">
+                    @foreach (var financa in ListaDeFinanca.ListaDeNomesDeFinancas())
+                    {
+                        <MudSelectItem Value="financa">@financa</MudSelectItem>
+                    }
+             </MudSelect>
+             <MudStack Class="justify-space-between mud-width-full">
+                <MudSelect @bind-Value="Financa.NomeOperacao" Placeholder="Selecione um Tipo de Operaçao" Label="Nome da Operação" Variant="Variant.Outlined" Margin="Margin.Dense">
+                    @foreach (var financa in ListaDeFinanca.ListaDeNomesDeOperacao())
+                    {
+                        <MudSelectItem Value="financa">@financa</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudStack>
+            <MudTextField @bind-Value="Financa.Descricao" Placeholder="Digite uma descrição..." Label="Descrição" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+            <MudNumericField @bind-Value="Financa.Valor" Label="Digite Um Valor" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField> 
+            <MudDatePicker @bind-Date="Financa.Data" Label="Selecione Uma data" Variant="Variant.Outlined" Margin="Margin.Dense" ></MudDatePicker>
+            <MudSelect @bind-Value="Financa.Tipo" Placeholder="Selecione um Tipo de Finança" Label="Tipo de Finança" Variant="Variant.Outlined" Margin="Margin.Dense">
+                    @foreach (var tipo in ListaDeFinanca.ListaDeTiposDeFinancas())
+                    {
+                        <MudSelectItem Value="tipo">@tipo</MudSelectItem>
+                    }
+             </MudSelect>             
+            <br />
+            <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Adicionar">Adicionar Finança</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" Href="@($"/financa")">Voltar à Página Inicial.</MudButton>
+        </MudCardContent>
 <MudTable Elevation="0" Striped="false" Items="ListaDeFinancas" FixedHeader="@fixar_cabecalho" FixedFooter="@fixar_rodape" 
-Height="@(fixar_cabecalho || fixar_rodape ?"400px":"")">    
+    Height="@(fixar_cabecalho || fixar_rodape ?"400px":"")">    
     <HeaderContent>
         <MudTh>Código</MudTh>
         <MudTh>Nome da Finança</MudTh>
@@ -73,9 +73,8 @@ Height="@(fixar_cabecalho || fixar_rodape ?"400px":"")">
 <MudSwitch @bind-Value="fixar_cabecalho" Color="Color.Primary">Fixar Cabeçalho</MudSwitch>
 <MudSwitch @bind-Value="fixar_rodape" Color="Color.Primary">Fixar Rodapé</MudSwitch>
 @code {
-    private Financa Financa{ get; set; } = new Financa();
-    private NomeDeFinanca NomeDeFinanca { get; set; } = new NomeDeFinanca();
-
+    private Financa Financa{ get; set; } = new Financa(); 
+    
     [SupplyParameterFromQuery]
     private int Id { get; set; }
 

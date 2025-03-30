@@ -1,5 +1,4 @@
 ﻿using Application.Abstractions.RelatoriosAbstractions;
-using Domain.EntitiesLists;
 using Domain.Interfaces.RelatorioInterface;
 
 namespace Application.Services.RelatoriosService
@@ -13,10 +12,10 @@ namespace Application.Services.RelatoriosService
             _relatorioDespesaRepository = relatorioDespesaRepository;
         }
 
-        public SomarValoresDeDespesa RelatorioDeDespesasGeraisService(int ano)
+        public ListaDeMeses RelatorioDeDespesasGeraisService(int ano)
         {
-            SomarValoresDeDespesa somarValoresDeDespesa = [];
-            return somarValoresDeDespesa = _relatorioDespesaRepository.RelatorioDeDespesasGerais(ano);
+            ListaDeMeses listaDeMeses = [];
+            return listaDeMeses = _relatorioDespesaRepository.RelatorioDeDespesasGerais(ano);
         }
     }
 }

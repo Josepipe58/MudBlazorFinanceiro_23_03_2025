@@ -1,9 +1,7 @@
-﻿using Domain.EntitiesLists;
-
-namespace Domain.Interfaces.RelatorioInterface
+﻿namespace Domain.Interfaces.RelatorioInterface
 {
     public interface IRelatorioDespesaRepository
     {
-        SomarValoresDeDespesa RelatorioDeDespesasGerais(int ano);
+        ListaDeMeses RelatorioDeDespesasGerais(int ano);
     }
 }

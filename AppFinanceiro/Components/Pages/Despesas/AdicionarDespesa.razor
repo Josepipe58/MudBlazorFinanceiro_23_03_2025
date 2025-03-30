@@ -53,14 +53,17 @@
         <MudTh>Tipo</MudTh>
     </FooterContent>
     <PagerContent>
-        <MudTablePager PageSizeOptions="new int[]{25, 50, 100, 200}" />
+        <MudTablePager PageSizeOptions="new int[]{25, 50, 100}" />
     </PagerContent>
 </MudTable>
 <MudSwitch @bind-Value="fixar_cabecalho" Color="Color.Primary">Fixar Cabeçalho</MudSwitch>
 <MudSwitch @bind-Value="fixar_rodape" Color="Color.Primary">Fixar Rodapé</MudSwitch>
 @code {
     private Despesa Despesa{ get; set; } = new Despesa(); 
-    public BuscarAno BuscarAno { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
     bool fixar_cabecalho = true;
     bool fixar_rodape = false;
     public decimal carteira;
@@ -73,14 +76,13 @@
     {
         carteira = saldoFinanceiroCPIService.SaldoDaCarteira();
         Despesa.Data = DateTime.Today;
-        ListaDeDespesas = await despesaService.ObterListaDeDespesasPorAno(DateTime.Now.Year);
+        await ObterDespesas();
         await ObterCategorias();
     }
 
-    private async Task<IEnumerable<Despesa>> ObterDespesas(BuscarAno ano)
+    private async Task<IEnumerable<Despesa>> ObterDespesas()
     {
-        ListaDeDespesas = await despesaService.ObterListaDeDespesasPorAno(ano.Ano);
-        BuscarAno = new BuscarAno();
+        ListaDeDespesas = await despesaService.ObterListaDeDespesas();
         return ListaDeDespesas;
     }
 
@@ -95,12 +97,11 @@
         if (Despesa.Id <= 0 && !string.IsNullOrWhiteSpace(Despesa.NomeCategoria) && !string.IsNullOrWhiteSpace(Despesa.Descricao) 
         && !string.IsNullOrWhiteSpace(Convert.ToString(Despesa.Data)) && !string.IsNullOrWhiteSpace(Despesa.Tipo) && Despesa.Valor > 0)
         {
-            BuscarAno.Ano = Despesa.Data.Value.Year;
             await despesaService.AdicionarDespesa(Despesa);           
             Despesa = new Despesa();
             snackBar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
             snackBar.Add("Despesa adicionada com sucesso!", Severity.Info);           
-            await ObterDespesas(BuscarAno);
+            await ObterDespesas();
         }
         else
         {
