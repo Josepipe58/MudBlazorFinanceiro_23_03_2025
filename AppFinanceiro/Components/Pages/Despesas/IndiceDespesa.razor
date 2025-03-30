@@ -1,6 +1,4 @@
 ﻿@page "/despesa"
-@using Application.Abstractions.ConsultasAbstractions
-@using Application.ListasContext
 
 <MudCardContent>    
     <MudCardHeader>
@@ -12,15 +10,15 @@
 </MudCardContent>
 <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" Href="@($"despesa/adicionar")">Adicionar Nova Despesa</MudButton>
 <MudStack AlignItems="AlignItems.Start" Style="width: 600px">
-    <MudSelect T="Ano" Label="@("Ano Atual - " + Convert.ToString(ListaDeAnos[0].AnoDoCadastro = DateTime.Now.Year))" Variant="Variant.Outlined"
-               Style="width: 200px" ValueChanged="AnoSelecionado" Margin="Margin.Dense">
-        @foreach (var ano in ListaDeAnos)
+    <MudSelect T="BuscarAno" Label="Selecione o Ano" Variant="Variant.Outlined"
+    Style="width: 200px" ValueChanged="AnoSelecionado" Margin="Margin.Dense">
+        @foreach (var ano in BancoDeListas.TAnos)
         {
-            <MudSelectItem T="Ano" Value="@ano">@ano.AnoDoCadastro</MudSelectItem>
+            <MudSelectItem T="BuscarAno" Value="@ano">@ano.Ano</MudSelectItem>
         }
     </MudSelect>
 </MudStack>
-<MudTable Items="ListaDeMeses" Elevation="0">
+<MudTable Items="SomarValoresDeDespesa" Elevation="0">
     <HeaderContent>
         <MudTh>Janeiro  </MudTh>
         <MudTh>Fevereiro</MudTh>
@@ -98,11 +96,10 @@ FixedFooter="@fixar_rodape" Height="@(fixar_cabecalho || fixar_rodape ?"600px":"
 <MudSwitch @bind-Value="fixar_cabecalho" Color="Color.Primary">Fixar Cabeçalho</MudSwitch>
 <MudSwitch @bind-Value="fixar_rodape" Color="Color.Primary">Fixar Rodapé</MudSwitch>
 @code{
-    public Ano Ano { get; set; } = new();
+    public BuscarAno BuscarAno { get; set; } = new();
     private Despesa Despesa { get; set; } = new Despesa();
     private IEnumerable<Despesa> ListaDeDespesas = new List<Despesa>(); 
-    public ListaDeMeses ListaDeMeses = new();   
-    public List<Ano> ListaDeAnos = new List<Ano>();    
+    public SomarValoresDeDespesa SomarValoresDeDespesa = new();
     private string criterio = "";
     bool fixar_cabecalho = true;
     bool fixar_rodape = false; 
@@ -110,26 +107,27 @@ FixedFooter="@fixar_rodape" Height="@(fixar_cabecalho || fixar_rodape ?"600px":"
 
     protected override async Task OnInitializedAsync()
     {
-        //Conexão com listas em memória.
-        ListaDeAnos = ListsInMemory.TAnos();
-        ListaDeMeses = relatorioDespesaService.RelatorioDeDespesasGeraisService(Convert.ToInt32(DateTime.Now.Year));
-        carteira = saldoFinanceiroCPIService.SaldoDaCarteira();
-        await ObterDespesas();
+        ListaDeDespesas = await despesaService.ObterListaDeDespesasPorAno(Convert.ToInt32(DateTime.Now.Year));
+        SomarValoresDeDespesa = relatorioDespesaService.RelatorioDeDespesasGeraisService(Convert.ToInt32(DateTime.Now.Year));
+        carteira = saldoFinanceiroCPIService.SaldoDaCarteira();        
     }
 
-    private async Task<IEnumerable<Despesa>> ObterDespesas()
-    {
-        ListaDeDespesas = await despesaService.ObterListaDeDespesas();
-        return ListaDeDespesas;
-    }
-
-    private void AnoSelecionado(Ano ano)
-    {
-        ListaDeMeses = relatorioDespesaService.RelatorioDeDespesasGeraisService(ano.AnoDoCadastro);
+    private async Task AnoSelecionado(BuscarAno ano)
+    {       
+        SomarValoresDeDespesa =  relatorioDespesaService.RelatorioDeDespesasGeraisService(ano.Ano);
+        ListaDeDespesas = await despesaService.ObterListaDeDespesasPorAno((ano.Ano));
+        BuscarAno = new BuscarAno();
     }
 
     private async Task ConfirmarExcluir(int id)
     {
+        Despesa = await despesaService.ObterDespesaPorId(id);
+        if (Despesa.Id <= 0)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+        BuscarAno.Ano = Despesa.Data.Value.Year;
+        
         bool? result = await dialogService.ShowMessageBox(
         $"Você tem certeza que deseja excluir esse item {id} ?",
         $"Cuidado! Porque a exclusão dele, não pode ser desfeita!",
@@ -142,7 +140,7 @@ FixedFooter="@fixar_rodape" Height="@(fixar_cabecalho || fixar_rodape ?"600px":"
         else
         {
             NavigationManager.NavigateTo("/despesa");
-            await ObterDespesas();
+            await AnoSelecionado(BuscarAno);
         }
     }
 
@@ -152,7 +150,7 @@ FixedFooter="@fixar_rodape" Height="@(fixar_cabecalho || fixar_rodape ?"600px":"
         Despesa = new Despesa();
         snackBar.Add("Despesa excluída com sucesso.", Severity.Error);
         NavigationManager.NavigateTo("/despesa");
-        await ObterDespesas();
+        await AnoSelecionado(BuscarAno);
     }
 
     private bool Pesquisar(Despesa despesa)

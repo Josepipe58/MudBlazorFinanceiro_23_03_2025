@@ -34,9 +34,9 @@ namespace Application.Services
             return despesa!;
         }
 
-        public async Task<IEnumerable<Despesa>> ObterListaDeDespesas()
+        public async Task<IEnumerable<Despesa>> ObterListaDeDespesasPorAno(int ano)
         {
-            return await _despesaRepository.ObterDespesaAsync();
+            return await _despesaRepository.ObterDespesaPorAnoAsync(ano);
         }
     }
 }

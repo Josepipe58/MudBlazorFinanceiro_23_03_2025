@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.EntitiesLists;
 using Domain.Interfaces.RelatorioInterface;
 using Infrastructure.Context;
 
@@ -12,12 +13,12 @@ namespace Infrastructure.Repositories.RelatorioRepository
         private static readonly string[] despesasExtrasInformatica = ["Despesas Extras", "Informática"];
         static readonly string[] caridadeDespExtrasInfo = ["Caridade", "Despesas Extras", "Informática"];
         */
-        public ListaDeMeses RelatorioDeDespesasGerais(int ano)
+        public SomarValoresDeDespesa RelatorioDeDespesasGerais(int ano)
         {
             try
             {
                 Meses meses = new();
-                ListaDeMeses listaDeMeses = [];
+                SomarValoresDeDespesa somarValoresDeDespesa = [];
                 meses.Janeiro =
                     _context.TDespesas.Where(d => d.Data.Value.Year == ano && d.Data.Value.Month == 1).Select(d => d.Valor).Sum();
                 meses.Fevereiro =
@@ -46,9 +47,9 @@ namespace Infrastructure.Repositories.RelatorioRepository
                 meses.TotalAno =
                     _context.TDespesas.Where(d => d.Data.Value.Year == ano).Select(d => d.Valor).Sum();
 
-                listaDeMeses.Add(meses);
+                somarValoresDeDespesa.Add(meses);
 
-                return listaDeMeses;
+                return somarValoresDeDespesa;
             }
             catch (Exception)
             {

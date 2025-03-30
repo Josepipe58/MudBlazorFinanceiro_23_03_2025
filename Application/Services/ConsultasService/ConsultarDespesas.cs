@@ -1,8 +1,4 @@
-﻿using Infrastructure.Context;
-using Domain.Entities;
-using Application.Listas;
-
-namespace Application.Services.ConsultasService
+﻿namespace Application.Services.ConsultasService
 {
     public static class ConsultarDespesas
     {/*
