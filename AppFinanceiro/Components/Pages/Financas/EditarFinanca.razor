@@ -15,17 +15,17 @@
             <MudNumericField @bind-Value="Financa.Id" Disabled Label="Digite um Valor" Variant="Variant.Outlined" Margin="Margin.Normal"></MudNumericField>
             <MudStack Class="justify-space-between mud-width-full">
                 <MudSelect @bind-Value="Financa.NomeFinanca" Placeholder="Selecione um Tipo de Finança" Label="Nome de Finança" Variant="Variant.Outlined" Margin="Margin.Normal">
-                    @foreach (var financa in ListaDeFinanca.ListaDeNomesDeFinancas())
+                    @foreach (var financa in BancoDeListas.TNomeDeFinancas)
                     {
-                        <MudSelectItem Value="financa">@financa</MudSelectItem>
+                        <MudSelectItem Value="financa.Nome">@financa.Nome</MudSelectItem>
                     }
                 </MudSelect>
             </MudStack>
             <MudStack Class="justify-space-between mud-width-full">
                 <MudSelect @bind-Value="Financa.NomeOperacao" Placeholder="Selecione um Tipo de Operaçao" Label="Nome da Operação" Variant="Variant.Outlined" Margin="Margin.Normal">
-                    @foreach (var financa in ListaDeFinanca.ListaDeNomesDeOperacao())
+                    @foreach (var financa in BancoDeListas.TNomeDeOperacoes)
                     {
-                        <MudSelectItem Value="financa">@financa</MudSelectItem>
+                        <MudSelectItem Value="financa.Nome">@financa.Nome</MudSelectItem>
                     }
                 </MudSelect>
             </MudStack>
@@ -34,9 +34,9 @@
             <MudTextField @bind-Value="@Financa.Valor" Label="Digite um Valor" Variant="Variant.Outlined"  Margin="Margin.Normal"></MudTextField>
             <MudDatePicker @bind-Date="Financa.Data" Placeholder="Selecione a Data" Label="Data" Variant="Variant.Outlined" Margin="Margin.Normal"></MudDatePicker>
             <MudSelect @bind-Value="Financa.Tipo" Placeholder="Selecione um Tipo de Finança" Label="Tipo de Finança" Variant="Variant.Outlined" Margin="Margin.Normal">
-                @foreach (var tipo in ListaDeFinanca.ListaDeTiposDeFinancas())
+                @foreach (var nomeDeTipo in BancoDeListas.TNomeDeTipos)
                 {
-                    <MudSelectItem Value="tipo">@tipo</MudSelectItem>
+                    <MudSelectItem Value="nomeDeTipo.Nome">@nomeDeTipo.Nome</MudSelectItem>
                 }
             </MudSelect>
             <br />

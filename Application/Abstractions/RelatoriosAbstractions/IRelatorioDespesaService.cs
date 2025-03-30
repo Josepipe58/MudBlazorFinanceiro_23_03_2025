@@ -1,9 +1,9 @@
-﻿using Domain.Interfaces.RelatorioInterface;
+﻿using Domain.EntitiesLists;
 
 namespace Application.Abstractions.RelatoriosAbstractions
 {
     public interface IRelatorioDespesaService
     {
-        ListaDeMeses RelatorioDeDespesasGeraisService(int ano);
+        SomarValoresDeDespesa RelatorioDeDespesasGeraisService(int ano);
     }
 }

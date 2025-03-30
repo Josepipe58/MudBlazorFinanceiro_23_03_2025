@@ -1,4 +1,4 @@
-﻿namespace Domain.Interfaces.RelatorioInterface
+﻿namespace Domain.EntitiesLists
 {
     public class Meses
     {
@@ -17,6 +17,6 @@
         public decimal TotalAno { get; set; }
         public decimal SaldoCarteira { get; set; }
     }
-
-    public class ListaDeMeses : List<Meses> { }
+    public class SomarValoresDeDespesa : List<Meses> { }
+    public class SomarValoresDeFinanca : List<Meses> { }
 }

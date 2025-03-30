@@ -1,9 +1,6 @@
-﻿using Application.Abstractions;
-using Application.Abstractions.ConsultasAbstractions;
-using Application.Abstractions.RelatoriosAbstractions;
-using Application.Services;
-using Application.Services.ConsultasService;
-using Application.Services.RelatoriosService;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Domain.Interfaces;
 using Domain.Interfaces.ConsultasInterface;
 using Domain.Interfaces.RelatorioInterface;
@@ -11,9 +8,12 @@ using Infrastructure.Context;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.ConsultasRepository;
 using Infrastructure.Repositories.RelatorioRepository;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Application.Abstractions;
+using Application.Abstractions.ConsultasAbstractions;
+using Application.Abstractions.RelatoriosAbstractions;
+using Application.Services;
+using Application.Services.ConsultasService;
+using Application.Services.RelatoriosService;
 
 namespace Application.DependenciesApp
 {
