@@ -8,28 +8,27 @@
 @using System.Net.Http
 @using System.Net.Http.Json
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
-
-@using AppFinanceiro
-@using AppFinanceiro.Components
-@using AppFinanceiro.Components.Pages.Consultas
+@using FluentValidation
+@using Domain.Entities
+@using Domain.EntitiesLists
+@using Domain.Interfaces.RelatorioInterface
+@using Infrastructure.Context
+@using static Infrastructure.ListasContext.BancoDeListas
+@using Infrastructure.ListasContext
 @using Application.Abstractions
 @using Application.Abstractions.ConsultasAbstractions
 @using Application.Abstractions.RelatoriosAbstractions
-@using static Infrastructure.ListasContext.BancoDeListas
-@using Infrastructure.ListasContext
-@using Domain.EntitiesLists
-
 @using Application.Services.ConsultasService
-@using Infrastructure.Context
-@using Domain.Entities
-@using Domain.Interfaces.RelatorioInterface
+@using AppFinanceiro
+@using AppFinanceiro.Components
+@using AppFinanceiro.Components.Pages.Consultas
 
 @inject NavigationManager NavigationManager
 @inject IDialogService dialogService
 @inject ISnackbar snackBar
 
+@inject ICategoriaService categoriaService
 @inject IDespesaService despesaService
 @inject IFinancaService financaService
-@inject ICategoriaService categoriaService
 @inject ISaldoFinanceiroCPIService saldoFinanceiroCPIService
 @inject IRelatorioDespesaService relatorioDespesaService

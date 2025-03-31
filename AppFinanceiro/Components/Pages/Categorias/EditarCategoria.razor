@@ -1,5 +1,4 @@
 ﻿@page "/categoria/editar"
-@using Application.Abstractions.ConsultasAbstractions
 
 <MudStack Style="white-space: 400px" Class="justify-space-between mud-width-full" AlignItems="AlignItems.Stretch" >
     <MudCard Elevation="25">
@@ -47,7 +46,7 @@
             await categoriaService.EditarCategoria(Categoria);
             Categoria = new Categoria();
             snackBar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-            snackBar.Add($"Categoria alterada com sucesso!", Severity.Info);
+            snackBar.Add($"Categoria alterada com sucesso!", MudBlazor.Severity.Info);
             NavigationManager.NavigateTo("/categoria");
         }
         else

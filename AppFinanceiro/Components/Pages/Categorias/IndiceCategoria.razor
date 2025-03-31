@@ -1,5 +1,4 @@
 ﻿@page "/categoria"
-@using Application.Abstractions.ConsultasAbstractions
 
 <MudCard Elevation="25">
     <MudCardHeader>
@@ -86,7 +85,7 @@ else
     {
         await categoriaService.ExcluirCategoria(id);
         Categoria = new Categoria();
-        snackBar.Add("Categoria excluída com sucesso!", Severity.Error);
+        snackBar.Add("Categoria excluída com sucesso!", MudBlazor.Severity.Error);
         await ObterCategorias();
         NavigationManager.NavigateTo("/categoria");
     }

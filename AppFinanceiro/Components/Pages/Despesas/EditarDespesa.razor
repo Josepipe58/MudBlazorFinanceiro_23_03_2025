@@ -1,5 +1,4 @@
 ﻿@page "/despesa/editar"
-@using Application.Abstractions.ConsultasAbstractions
 
 <MudStack Style="white-space: 400px" Class="justify-space-between mud-width-full" AlignItems="AlignItems.Stretch" >
     <MudCard Elevation="25">
@@ -69,7 +68,7 @@
             await despesaService.EditarDespesa(Despesa);
             Despesa = new Despesa();
             snackBar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-            snackBar.Add($"Despesa alterada com sucesso!", Severity.Info);
+            snackBar.Add($"Despesa alterada com sucesso!", MudBlazor.Severity.Info);
             NavigationManager.NavigateTo("/despesa");
         }
         else

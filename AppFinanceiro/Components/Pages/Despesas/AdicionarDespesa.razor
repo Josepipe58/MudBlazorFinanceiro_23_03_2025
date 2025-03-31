@@ -1,73 +1,80 @@
 ﻿@page "/despesa/adicionar"
-@using Application.Abstractions.ConsultasAbstractions
 
-<MudCardContent>
-    <MudText Typo="Typo.h5" Color="Color.Info">CADASTRAR DESPESA</MudText>
-    <MudText>
-        <h3><a style="color:darkgray">Disponível na Carteira > @carteira.ToString("c")</a></h3> 
-    </MudText>
-    <br/>
-    <MudSelect @bind-Value="Despesa.NomeCategoria" Placeholder="Selecione uma Categoria" Label="Nome da Categoria" 
-    Variant="Variant.Outlined" Margin="Margin.Dense">        
-        @foreach (var categoria in ListaDeCategorias.ToList())
-        {            
-            <MudSelectItem Value="categoria.NomeCategoria">@categoria.NomeCategoria</MudSelectItem>
-        }
-    </MudSelect>
-    <MudTextField @bind-Value="Despesa.Descricao" Placeholder="Digite uma descrição..." Label="Descrição" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
-    <MudNumericField @bind-Value="Despesa.Valor" Label="Digite Um Valor" Variant="Variant.Outlined" Margin="Margin.Dense"></MudNumericField> 
-    <MudDatePicker @bind-Date="Despesa.Data" Label="Selecione Uma data" Variant="Variant.Outlined" Margin="Margin.Dense" editable="true" ></MudDatePicker>            
-    <MudSelect @bind-Value="Despesa.Tipo" Placeholder="Selecione um Tipo de Despesa" Label="Tipo de Despesa" Variant="Variant.Outlined" Margin="Margin.Dense">
-        @foreach (var tipo in ListaDeTipos.ToList())
-        {
-            <MudSelectItem Value="tipo">@tipo</MudSelectItem>
-        }
-    </MudSelect>
+<MudCard Elevation="25">   
+    <MudStack row>
+        <MudForm Model="@Despesa" @ref="@Form">
+            <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Start">CADASTRAR DESPESA</MudText>
+            <MudText Typo="Typo.h6" Align="Align.End">Disponível na Carteira > @carteira.ToString("c")</MudText>
+            <br />
+            <MudStack row AlignItems="AlignItems.Start" Style="width: 1600px">
+                <MudSelect T="string" @bind-Value="Despesa.NomeCategoria" Placeholder="Selecione uma Categoria" Label="Nome da Categoria" Style="width: 300px"
+                           Variant="Variant.Outlined" Margin="Margin.Dense">
+                    @foreach (var categoria in ListaDeCategorias.ToList())
+                    {
+                        <MudSelectItem T="string" Value="categoria.NomeCategoria">@categoria.NomeCategoria</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudTextField T="string" @bind-Value="Despesa.Descricao" Placeholder="Digite uma descrição..." Label="Descrição" Variant="Variant.Outlined" Style="width: 300px"
+                              Margin="Margin.Dense" Class="mx-4"></MudTextField>
+                <MudNumericField T="decimal" @bind-Value="Despesa.Valor" Label="Digite Um Valor" Variant="Variant.Outlined" Margin="Margin.Dense" Style="width: 300px"
+                                 Class="mx-0"></MudNumericField>
+                <MudDatePicker @bind-Date="Despesa.Data" Label="Selecione Uma data" Variant="Variant.Outlined" Margin="Margin.Dense" Style="width: 300px" Class="mx-0"></MudDatePicker>
+                <MudSelect T="string" @bind-Value="Despesa.Tipo" Placeholder="Selecione um Tipo de Despesa" Label="Tipo de Despesa" Variant="Variant.Outlined" Style="width: 300px"
+                           Margin="Margin.Dense" Class="mx-0">
+                    @foreach (var tipo in ListaDeTipos.ToList())
+                    {
+                        <MudSelectItem Value="tipo">@tipo</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudStack>
+            <br />
+            <MudStack row AlignItems="AlignItems.Center">
+                <MudButton Variant="Variant.Filled" Color="Color.Info" DropShadow="false" OnClick="@(()=>Adicionar())">Adicionar Despesa</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Info" DropShadow="false" Href="@($"/despesa")" Class="mx-4">Voltar à Página Inicial.</MudButton>
+            </MudStack>
+        </MudForm>
+    </MudStack>
     <br />
-    <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Adicionar">Adicionar Despesa</MudButton>
-    <MudButton Variant="Variant.Outlined" Color="Color.Info" Href="@($"/despesa")">Voltar à Página Inicial.</MudButton>
-</MudCardContent>
-<MudTable Elevation="0" Striped="false" Items="ListaDeDespesas" FixedHeader="@fixar_cabecalho" FixedFooter="@fixar_rodape" Height="@(fixar_cabecalho || fixar_rodape ?"400px":"")">    
-    <HeaderContent>
-        <MudTh>Código</MudTh>
-        <MudTh>Nome da Categoria</MudTh>
-        <MudTh>Descrição</MudTh>
-        <MudTh>Valor</MudTh>
-        <MudTh>Data</MudTh>
-        <MudTh>Tipo</MudTh>
-    </HeaderContent>
-    <RowTemplate Context="Despesa">
-        <MudTd DataLabel="Código">@Despesa.Id</MudTd>
-        <MudTd DataLabel="Nome da Categoria">@Despesa.NomeCategoria</MudTd>
-        <MudTd DataLabel="Descrição">@Despesa.Descricao</MudTd>
-        <MudTd DataLabel="Valor">@Despesa.Valor.ToString("c")</MudTd> 
-        <MudTd DataLabel="Data">@Convert.ToDateTime(@Despesa.Data).ToString("dd/MM/yyyy")</MudTd>
-        <MudTd DataLabel="Tipo">@Despesa.Tipo</MudTd>
-    </RowTemplate>
-    <FooterContent>
-        <MudTh>Código</MudTh>
-        <MudTh>Nome da Categoria</MudTh>
-        <MudTh>Descrição</MudTh>
-        <MudTh>Valor</MudTh>
-        <MudTh>Data</MudTh>
-        <MudTh>Tipo</MudTh>
-    </FooterContent>
-    <PagerContent>
-        <MudTablePager PageSizeOptions="new int[]{25, 50, 100, 200}" />
-    </PagerContent>
-</MudTable>
-<MudSwitch @bind-Value="fixar_cabecalho" Color="Color.Primary">Fixar Cabeçalho</MudSwitch>
-<MudSwitch @bind-Value="fixar_rodape" Color="Color.Primary">Fixar Rodapé</MudSwitch>
+    <MudDivider/>
+</MudCard>
+@if (ListaDeDespesas == null)
+{
+    <MudProgressCircular Color="Color.Error" Indeterminate="true" />
+    <h2 style="color:indianred">Ocorreu um erro...</h2>
+}
+else
+{
+    <MudTable Elevation="0" Striped="false" Items="ListaDeDespesas" FixedHeader="@fixar_cabecalho" Height="@(fixar_cabecalho ?"558px":"")">
+        <HeaderContent>
+            <MudTh>Código</MudTh>
+            <MudTh>Nome da Categoria</MudTh>
+            <MudTh>Descrição</MudTh>
+            <MudTh>Valor</MudTh>
+            <MudTh>Data</MudTh>
+            <MudTh>Tipo</MudTh>
+        </HeaderContent>
+        <RowTemplate Context="Despesa">
+            <MudTd DataLabel="Código">@Despesa.Id</MudTd>
+            <MudTd DataLabel="Nome da Categoria">@Despesa.NomeCategoria</MudTd>
+            <MudTd DataLabel="Descrição">@Despesa.Descricao</MudTd>
+            <MudTd DataLabel="Valor">@Despesa.Valor.ToString("c")</MudTd>
+            <MudTd DataLabel="Data">@Convert.ToDateTime(@Despesa.Data).ToString("dd/MM/yyyy")</MudTd>
+            <MudTd DataLabel="Tipo">@Despesa.Tipo</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[]{25, 50, 100, 200}" />
+        </PagerContent>
+    </MudTable>
+}
 @code {
-    private Despesa Despesa{ get; set; } = new Despesa(); 
+    private Despesa Despesa { get; set; } = new Despesa();
     public BuscarAno BuscarAno { get; set; } = new();
+    MudForm Form = new();   
     bool fixar_cabecalho = true;
-    bool fixar_rodape = false;
     public decimal carteira;
-
     private IEnumerable<Despesa> ListaDeDespesas = new List<Despesa>();
     private IEnumerable<Categoria> ListaDeCategorias = new List<Categoria>();
-    private string[] ListaDeTipos = { "Despesa de Casa", "Despesa de Banco",};
+    private string[] ListaDeTipos = { "Despesa de Casa", "Despesa de Banco", };
 
     protected override async Task OnInitializedAsync()
     {
@@ -92,14 +99,14 @@
 
     private async Task Adicionar()
     {
-        if (Despesa.Id <= 0 && !string.IsNullOrWhiteSpace(Despesa.NomeCategoria) && !string.IsNullOrWhiteSpace(Despesa.Descricao) 
+        if (Despesa.Id <= 0 && !string.IsNullOrWhiteSpace(Despesa.NomeCategoria) && !string.IsNullOrWhiteSpace(Despesa.Descricao)
         && !string.IsNullOrWhiteSpace(Convert.ToString(Despesa.Data)) && !string.IsNullOrWhiteSpace(Despesa.Tipo) && Despesa.Valor > 0)
         {
             BuscarAno.Ano = Despesa.Data.Value.Year;
-            await despesaService.AdicionarDespesa(Despesa);           
+            await despesaService.AdicionarDespesa(Despesa);
             Despesa = new Despesa();
             snackBar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-            snackBar.Add("Despesa adicionada com sucesso!", Severity.Info);           
+            snackBar.Add("Despesa adicionada com sucesso!", MudBlazor.Severity.Info);
             await ObterDespesas(BuscarAno);
         }
         else

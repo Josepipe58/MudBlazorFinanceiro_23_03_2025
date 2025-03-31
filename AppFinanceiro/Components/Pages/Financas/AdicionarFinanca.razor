@@ -112,7 +112,7 @@ Height="@(fixar_cabecalho || fixar_rodape ?"400px":"")">
             await financaService.AdicionarFinanca(Financa);           
             Financa = new Financa();
             snackBar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-            snackBar.Add("Finança adicionada com sucesso!", Severity.Info);           
+            snackBar.Add("Finança adicionada com sucesso!", MudBlazor.Severity.Info);
             await ObterFinancas();
         }
         else

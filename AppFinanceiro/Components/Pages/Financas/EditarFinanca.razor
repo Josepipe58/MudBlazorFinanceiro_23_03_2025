@@ -76,7 +76,7 @@
             await financaService.EditarFinanca(Financa);
             Financa = new Financa();
             snackBar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-            snackBar.Add($"Finança alterada com sucesso!", Severity.Info);
+            snackBar.Add($"Finança alterada com sucesso!", MudBlazor.Severity.Info);
             NavigationManager.NavigateTo("/financa");  
         }
         else

@@ -1,5 +1,4 @@
 ﻿@page "/categoria/adicionar"
-@using Application.Abstractions.ConsultasAbstractions
 
 <MudCard Elevation="25">
     <MudCardHeader>
@@ -20,7 +19,14 @@
         <MudButton Variant="Variant.Outlined" Color="Color.Info" Href="@($"/categoria")">Voltar à Página Inicial</MudButton>
     </MudCardContent>
 </MudCard>
-<MudTable Elevation="0" Striped="false" Items="ListaDeCategorias" FixedHeader="@fixar_cabecalho" FixedFooter="@fixar_rodape" 
+@if (ListaDeCategorias == null)
+{
+    <MudProgressCircular Color="Color.Error" Indeterminate="true" />
+    <h2 style="color:indianred">Ocorreu um erro...</h2>
+}
+else
+{
+    <MudTable Elevation="0" Striped="false" Items="ListaDeCategorias" FixedHeader="@fixar_cabecalho" FixedFooter="@fixar_rodape" 
 Height="@(fixar_cabecalho || fixar_rodape ?"400px":"")">
     <ToolBarContent>
         <MudText Typo="Typo.h5">Lista de Categorias</MudText>  
@@ -42,7 +48,8 @@ Height="@(fixar_cabecalho || fixar_rodape ?"400px":"")">
     </PagerContent>
 </MudTable>
 <MudSwitch @bind-Value="fixar_cabecalho" Color="Color.Primary">Fixar Cabeçalho</MudSwitch>
-<MudSwitch @bind-Value="fixar_rodape" Color="Color.Primary">Fixar Rodapé</MudSwitch>
+<MudSwitch @bind-Value="fixar_rodape" Color="Color.Primary">Fixar Rodapé</MudSwitch>}
+
 @code {
     [SupplyParameterFromQuery]
     private int Id { get; set; }
@@ -77,7 +84,7 @@ Height="@(fixar_cabecalho || fixar_rodape ?"400px":"")">
             await categoriaService.AdicionarCategoria(Categoria);
             Categoria = new Categoria();
             snackBar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-            snackBar.Add("Categoria adicionada com sucesso!", Severity.Info);        
+            snackBar.Add("Categoria adicionada com sucesso!", MudBlazor.Severity.Info);        
             await ObterCategorias();
         }
         else
