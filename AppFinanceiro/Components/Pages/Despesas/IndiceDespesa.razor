@@ -1,118 +1,122 @@
 ﻿@page "/despesa"
 
-<MudCard>
-    <MudCardHeader>
-        <CardHeaderContent>
-            <MudText Typo="Typo.h5" Color="Color.Primary" Align="Align.Start">Página Inicial de Despesas</MudText><br/>
-            <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" Href="@($"despesa/adicionar")">Adicionar Nova Despesa</MudButton>
-            <MudText Typo="Typo.h6" Color="Color.Primary" Align="Align.End">Disponível na Carteira > @carteira.ToString("c")</MudText>            
-        </CardHeaderContent>
-    </MudCardHeader>
-    <MudStack row AlignItems="AlignItems.Center" Style="width: 250px">
-        <MudSelect T="BuscarAno" Label="Selecione o Ano" Variant="Variant.Outlined" AdornmentColor="Color.Primary" Class="mx-5" ValueChanged="AnoSelecionado"
-                   Margin="Margin.Dense">
-            @foreach (var ano in BancoDeListas.TAnos)
-            {
-                <MudSelectItem T="BuscarAno" Value="@ano">@ano.Ano</MudSelectItem>
-            }
-        </MudSelect>
-    </MudStack> 
+<MudCard Elevation="25" Class="d-flex align-top flex-grow-1 border border-solid mud-border-default pa-2 ">
+    <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">
+        Página Inicial de Despesas
+    </MudText>
+    <MudStack row AlignItems="AlignItems.Center" Style="width: 1200px">
+        <MudButton Size="Size.Medium" Variant="Variant.Filled" Color="Color.Info" Href="@($"despesa/adicionar")">Adicionar Nova Despesa</MudButton>
+        <MudStack row AlignItems="AlignItems.Start" Style="width: 200px">
+            <MudSelect T="BuscarAno" Label="Selecione o Ano" Variant="Variant.Outlined" AdornmentColor="Color.Primary" ValueChanged="AnoSelecionado"
+                       Margin="Margin.Dense" Style="width: 200px">
+                @foreach (var ano in BancoDeListas.TAnos)
+                {
+                    <MudSelectItem T="BuscarAno" Value="@ano">@ano.Ano</MudSelectItem>
+                }
+            </MudSelect>
+        </MudStack>
+        <MudText Color="Color.Default" Align="Align.End" Class="mx-auto pa-1">Disponível na Carteira > @carteira.ToString("c")</MudText>
+    </MudStack>
+</MudCard>
+<MudCard Elevation="25" Class="d-flex align-top flex-grow-1 border border-solid mud-border-default pa-2 ">
+    <MudText Color="Color.Info" Align="Align.Center">
+        Despesa Geral Por Mês e Ano
+    </MudText>
+    @if (SomarValoresDeDespesa == null)
+    {
+        <MudProgressCircular Color="Color.Error" Indeterminate="true" />
+        <h3 style="color:indianred">Ocorreu um erro...</h3>
+    }
+    else
+    {
+        <MudTable Items="SomarValoresDeDespesa" Elevation="0">
+            <HeaderContent>
+                <MudTh>Janeiro  </MudTh>
+                <MudTh>Fevereiro</MudTh>
+                <MudTh>Março    </MudTh>
+                <MudTh>Abril    </MudTh>
+                <MudTh>Maio     </MudTh>
+                <MudTh>Junho    </MudTh>
+                <MudTh>julho    </MudTh>
+                <MudTh>Agôsto   </MudTh>
+                <MudTh>Setembro</MudTh>
+                <MudTh>Outubro </MudTh>
+                <MudTh>Novembro</MudTh>
+                <MudTh>Dezembro</MudTh>
+                <MudTh>Total Geral</MudTh>
+            </HeaderContent>
+            <RowTemplate Context="Meses">
+                <MudTd DataLabel="Janeiro">@Meses.Janeiro</MudTd>
+                <MudTd DataLabel="Fevereiro">@Meses.Fevereiro</MudTd>
+                <MudTd DataLabel="Março">@Meses.Marco</MudTd>
+                <MudTd DataLabel="Abril">@Meses.Abril</MudTd>
+                <MudTd DataLabel="Maio">@Meses.Maio</MudTd>
+                <MudTd DataLabel="Junho">@Meses.Junho</MudTd>
+                <MudTd DataLabel="Julhoo">@Meses.Julho</MudTd>
+                <MudTd DataLabel="Agôsto">@Meses.Agosto</MudTd>
+                <MudTd DataLabel="Setembro">@Meses.Setembro</MudTd>
+                <MudTd DataLabel="Outubro">@Meses.Outubro</MudTd>
+                <MudTd DataLabel="Nonembro">@Meses.Novembro</MudTd>
+                <MudTd DataLabel="Dezembro">@Meses.Dezembro</MudTd>
+                <MudTd DataLabel="Dezembro">@Meses.TotalAno</MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+</MudCard>
+<MudCard Elevation="25" Class="d-flex align-top flex-grow-1 border border-solid mud-border-default pa-3 ">
     <MudStack AlignItems="AlignItems.End">
         <MudTextField @bind-Value="criterio" Placeholder="Pesquisar despesas..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
-                      IconSize="Size.Medium" Class="mt-0" Style="width: 400px">
+                      IconSize="Size.Medium" Style="width: 400px">
         </MudTextField>
-    </MudStack>  
+    </MudStack>
+    @if (ListaDeDespesas == null)
+    {
+        <MudProgressCircular Color="Color.Error" Indeterminate="true" />
+        <h2 style="color:indianred">Ocorreu um erro...</h2>
+    }
+    else
+    {
+        <MudTable Elevation="0" Striped="false" Items="ListaDeDespesas" Filter="new Func<Despesa, bool>(Pesquisar)" FixedHeader="@fixar_cabecalho"
+                  Height="@(fixar_cabecalho ?"460px":"")">
+            <HeaderContent>
+                <MudTh>Código</MudTh>
+                <MudTh>Nome da Categoria</MudTh>
+                <MudTh>Descrição</MudTh>
+                <MudTh>Valor</MudTh>
+                <MudTh>Data</MudTh>
+                <MudTh>Tipo</MudTh>
+                <MudTh>Operação</MudTh>
+            </HeaderContent>
+            <RowTemplate Context="Despesa">
+                <MudTd DataLabel="Código">@Despesa.Id</MudTd>
+                <MudTd DataLabel="Nome da Categoria">@Despesa.NomeCategoria</MudTd>
+                <MudTd DataLabel="Descrição">@Despesa.Descricao</MudTd>
+                <MudTd DataLabel="Valor">@Despesa.Valor.ToString("c")</MudTd>
+                <MudTd DataLabel="Data">@Convert.ToDateTime(@Despesa.Data).ToString("dd/MM/yyyy")</MudTd>
+                <MudTd DataLabel="tipo">@Despesa.Tipo</MudTd>
+                <MudTd DataLabel="">
+                    <MudButton Variant="Variant.Text" Color="Color.Default" Href="@($"despesa/editar?id={Despesa.Id}")"
+                               StartIcon="@Icons.Material.Filled.ModeEditOutline">Editar</MudButton>
+                    <MudButton Variant="Variant.Text" Color="Color.Default" @onclick="@(e=> ConfirmarExcluir(Despesa.Id))"
+                               StartIcon="@Icons.Material.Filled.DeleteOutline">Excluir</MudButton>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager RowsPerPageString="Linhas por página: " HorizontalAlignment="HorizontalAlignment.Start" PageSizeOptions="new int[]{50, 100, 200}" />
+            </PagerContent>
+        </MudTable>
+    }
 </MudCard>
-@if (SomarValoresDeDespesa == null)
-{
-    <MudProgressCircular Color="Color.Error" Indeterminate="true" />
-    <h2 style="color:indianred">Ocorreu um erro...</h2>
-}
-else
-{
-    <MudTable Items="SomarValoresDeDespesa" Elevation="0">
-        <HeaderContent>
-            <MudTh>Janeiro  </MudTh>
-            <MudTh>Fevereiro</MudTh>
-            <MudTh>Março    </MudTh>
-            <MudTh>Abril    </MudTh>
-            <MudTh>Maio     </MudTh>
-            <MudTh>Junho    </MudTh>
-            <MudTh>julho    </MudTh>
-            <MudTh>Agôsto   </MudTh>
-            <MudTh>Setembro</MudTh>
-            <MudTh>Outubro </MudTh>
-            <MudTh>Novembro</MudTh>
-            <MudTh>Dezembro</MudTh>
-            <MudTh>Total Geral</MudTh>
-        </HeaderContent>
-        <RowTemplate Context="Meses">
-            <MudTd DataLabel="Janeiro">@Meses.Janeiro</MudTd>
-            <MudTd DataLabel="Fevereiro">@Meses.Fevereiro</MudTd>
-            <MudTd DataLabel="Março">@Meses.Marco</MudTd>
-            <MudTd DataLabel="Abril">@Meses.Abril</MudTd>
-            <MudTd DataLabel="Maio">@Meses.Maio</MudTd>
-            <MudTd DataLabel="Junho">@Meses.Junho</MudTd>
-            <MudTd DataLabel="Julhoo">@Meses.Julho</MudTd>
-            <MudTd DataLabel="Agôsto">@Meses.Agosto</MudTd>
-            <MudTd DataLabel="Setembro">@Meses.Setembro</MudTd>
-            <MudTd DataLabel="Outubro">@Meses.Outubro</MudTd>
-            <MudTd DataLabel="Nonembro">@Meses.Novembro</MudTd>
-            <MudTd DataLabel="Dezembro">@Meses.Dezembro</MudTd>
-            <MudTd DataLabel="Dezembro">@Meses.TotalAno</MudTd>
-        </RowTemplate>
-    </MudTable>
-    <MudText Color="Color.Default">
-    |======================================================================================================================================================================================|
-    </MudText>
-}
-
-<MudDivider />
-@if (ListaDeDespesas == null)
-{
-    <MudProgressCircular Color="Color.Error" Indeterminate="true" />
-    <h2 style="color:indianred">Ocorreu um erro...</h2>
-}
-else
-{
-    <MudTable Elevation="0" Striped="false" Items="ListaDeDespesas" Filter="new Func<Despesa, bool>(Pesquisar)" FixedHeader="@fixar_cabecalho"
-              Height="@(fixar_cabecalho ?"405px":"")">
-        <HeaderContent>
-            <MudTh>Código</MudTh>
-            <MudTh>Nome da Categoria</MudTh>
-            <MudTh>Descrição</MudTh>
-            <MudTh>Valor</MudTh>
-            <MudTh>Data</MudTh>
-            <MudTh>Tipo</MudTh>
-            <MudTh>Operação</MudTh>
-        </HeaderContent>
-        <RowTemplate Context="Despesa">
-            <MudTd DataLabel="Código">@Despesa.Id</MudTd>
-            <MudTd DataLabel="Nome da Categoria">@Despesa.NomeCategoria</MudTd>
-            <MudTd DataLabel="Descrição">@Despesa.Descricao</MudTd>
-            <MudTd DataLabel="Valor">@Despesa.Valor.ToString("c")</MudTd>
-            <MudTd DataLabel="Data">@Convert.ToDateTime(@Despesa.Data).ToString("dd/MM/yyyy")</MudTd>
-            <MudTd DataLabel="tipo">@Despesa.Tipo</MudTd>
-            <MudTd DataLabel="">
-                <MudButton Variant="Variant.Text" Color="Color.Default" Href="@($"despesa/editar?id={Despesa.Id}")"
-                           StartIcon="@Icons.Material.Filled.ModeEditOutline">Editar</MudButton>
-                <MudButton Variant="Variant.Text" Color="Color.Default" @onclick="@(e=> ConfirmarExcluir(Despesa.Id))"
-                           StartIcon="@Icons.Material.Filled.DeleteOutline">Excluir</MudButton>
-            </MudTd>
-        </RowTemplate>       
-        <PagerContent>
-            <MudTablePager PageSizeOptions="new int[]{100, 50, 25}" />
-        </PagerContent>
-    </MudTable>
-}
+    @* <MudChip T="string" Style="height:8px; width: 1650px; background-color:steelblue"></MudChip> *@
 @code{
-    public BuscarAno BuscarAno { get; set; } = new();
     private Despesa Despesa { get; set; } = new Despesa();
-    private IEnumerable<Despesa> ListaDeDespesas = new List<Despesa>(); 
-    public SomarValoresDeDespesa SomarValoresDeDespesa = new();
+    public BuscarAno BuscarAno { get; set; } = new BuscarAno(); 
+    public SomarValoresDeDespesa SomarValoresDeDespesa = new SomarValoresDeDespesa();
+    private IEnumerable<Despesa> ListaDeDespesas = new List<Despesa>();
+    public decimal carteira;
     private string criterio = "";
     bool fixar_cabecalho = true;     
-    public decimal carteira;
+    
 
     protected override async Task OnInitializedAsync()
     {
@@ -138,8 +142,7 @@ else
         BuscarAno.Ano = Despesa.Data.Value.Year;
         
         bool? result = await dialogService.ShowMessageBox(
-        $"Você tem certeza que deseja excluir esse item {id} ?",
-        $"Cuidado! Porque a exclusão dele, não pode ser desfeita!",
+       "Atenção!", $"Você tem certeza que deseja excluir esse item {id} ?",
         yesText: "Excluir", cancelText: "Cancelar");
 
         if (result ?? false)

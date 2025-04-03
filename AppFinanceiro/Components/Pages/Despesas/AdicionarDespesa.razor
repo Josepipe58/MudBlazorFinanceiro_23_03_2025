@@ -1,9 +1,9 @@
 ﻿@page "/despesa/adicionar"
 
-<MudCard Elevation="25">   
+<MudCard Elevation="25" Class="d-flex align-top flex-grow-1 border border-solid mud-border-default pa-4 ">
     <MudStack row>
         <MudForm Model="@Despesa" @ref="@Form">
-            <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Start">CADASTRAR DESPESA</MudText>
+            <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">ADICIONAR NOVA DESPESA</MudText>
             <MudText Typo="Typo.h6" Align="Align.End">Disponível na Carteira > @carteira.ToString("c")</MudText>
             <br />
             <MudStack row AlignItems="AlignItems.Start" Style="width: 1600px">
@@ -29,43 +29,46 @@
             </MudStack>
             <br />
             <MudStack row AlignItems="AlignItems.Center">
-                <MudButton Variant="Variant.Filled" Color="Color.Info" DropShadow="false" OnClick="@(()=>Adicionar())">Adicionar Despesa</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Info" DropShadow="false" OnClick="@(() => Adicionar())">Adicionar Despesa</MudButton>
                 <MudButton Variant="Variant.Outlined" Color="Color.Info" DropShadow="false" Href="@($"/despesa")" Class="mx-4">Voltar à Página Inicial.</MudButton>
             </MudStack>
         </MudForm>
     </MudStack>
     <br />
-    <MudDivider/>
-</MudCard>
-@if (ListaDeDespesas == null)
-{
-    <MudProgressCircular Color="Color.Error" Indeterminate="true" />
-    <h2 style="color:indianred">Ocorreu um erro...</h2>
-}
-else
-{
-    <MudTable Elevation="0" Striped="false" Items="ListaDeDespesas" FixedHeader="@fixar_cabecalho" Height="@(fixar_cabecalho ?"558px":"")">
-        <HeaderContent>
-            <MudTh>Código</MudTh>
-            <MudTh>Nome da Categoria</MudTh>
-            <MudTh>Descrição</MudTh>
-            <MudTh>Valor</MudTh>
-            <MudTh>Data</MudTh>
-            <MudTh>Tipo</MudTh>
-        </HeaderContent>
-        <RowTemplate Context="Despesa">
-            <MudTd DataLabel="Código">@Despesa.Id</MudTd>
-            <MudTd DataLabel="Nome da Categoria">@Despesa.NomeCategoria</MudTd>
-            <MudTd DataLabel="Descrição">@Despesa.Descricao</MudTd>
-            <MudTd DataLabel="Valor">@Despesa.Valor.ToString("c")</MudTd>
-            <MudTd DataLabel="Data">@Convert.ToDateTime(@Despesa.Data).ToString("dd/MM/yyyy")</MudTd>
-            <MudTd DataLabel="Tipo">@Despesa.Tipo</MudTd>
-        </RowTemplate>
-        <PagerContent>
-            <MudTablePager PageSizeOptions="new int[]{25, 50, 100, 200}" />
-        </PagerContent>
-    </MudTable>
-}
+
+    <MudChip T="string" Style="height:8px; width: 1650px; background-color:steelblue"></MudChip>
+
+    @if (ListaDeDespesas == null)
+    {
+        <MudProgressCircular Color="Color.Error" Indeterminate="true" />
+        <h2 style="color:indianred">Ocorreu um erro...</h2>
+    }
+    else
+    {
+        <MudTable Elevation="0" Striped="false" Items="ListaDeDespesas" FixedHeader="@fixar_cabecalho" Height="@(fixar_cabecalho ?"508px":"")">
+            <HeaderContent>
+                <MudTh>Código</MudTh>
+                <MudTh>Nome da Categoria</MudTh>
+                <MudTh>Descrição</MudTh>
+                <MudTh>Valor</MudTh>
+                <MudTh>Data</MudTh>
+                <MudTh>Tipo</MudTh>
+            </HeaderContent>
+            <RowTemplate Context="Despesa">
+                <MudTd DataLabel="Código">@Despesa.Id</MudTd>
+                <MudTd DataLabel="Nome da Categoria">@Despesa.NomeCategoria</MudTd>
+                <MudTd DataLabel="Descrição">@Despesa.Descricao</MudTd>
+                <MudTd DataLabel="Valor">@Despesa.Valor.ToString("c")</MudTd>
+                <MudTd DataLabel="Data">@Convert.ToDateTime(@Despesa.Data).ToString("dd/MM/yyyy")</MudTd>
+                <MudTd DataLabel="Tipo">@Despesa.Tipo</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager RowsPerPageString="Linhas por página: " HorizontalAlignment="HorizontalAlignment.Start" PageSizeOptions="new int[]{50, 100, 200}" />
+            </PagerContent>
+        </MudTable>
+    }
+</MudCard> 
+    
 @code {
     private Despesa Despesa { get; set; } = new Despesa();
     public BuscarAno BuscarAno { get; set; } = new();

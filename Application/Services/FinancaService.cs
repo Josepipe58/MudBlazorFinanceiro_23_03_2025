@@ -34,9 +34,9 @@ namespace Application.Services
             return financa!;
         }
 
-        public async Task<IEnumerable<Financa>> ObterListaDeFinancas()
+        public async Task<IEnumerable<Financa>> ObterListaDeFinancasPorAno(int ano)
         {
-            return await _financaRepository.ObterFinancaAsync();
+            return await _financaRepository.ObterFinancaPorAnoAsync(ano);
         }
     }
 }

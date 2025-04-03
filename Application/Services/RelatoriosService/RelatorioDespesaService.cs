@@ -15,8 +15,7 @@ namespace Application.Services.RelatoriosService
 
         public SomarValoresDeDespesa RelatorioDeDespesasGeraisService(int ano)
         {
-            SomarValoresDeDespesa somarValoresDeDespesa = [];
-            return somarValoresDeDespesa = _relatorioDespesaRepository.RelatorioDeDespesasGerais(ano);
+            return  _relatorioDespesaRepository.RelatorioDeDespesasGerais(ano);
         }
     }
 }

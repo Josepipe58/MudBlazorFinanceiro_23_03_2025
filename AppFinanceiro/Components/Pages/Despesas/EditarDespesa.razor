@@ -1,47 +1,47 @@
 ﻿@page "/despesa/editar"
 
-<MudStack Style="white-space: 400px" Class="justify-space-between mud-width-full" AlignItems="AlignItems.Stretch" >
-    <MudCard Elevation="25">
-        <MudCardHeader>
-            <CardHeaderContent>
-                <MudText Typo="Typo.h5" Color="Color.Primary">Editar Despesa</MudText>
-            </CardHeaderContent>
-            <CardHeaderActions>
-                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
-            </CardHeaderActions>
-        </MudCardHeader>
-        <MudCardContent>
-            <MudNumericField @bind-Value="Despesa.Id" Disabled Label="Digite um Valor" Variant="Variant.Outlined" Margin="Margin.Normal"></MudNumericField>
-            <MudStack Class="justify-space-between mud-width-full">
-                <MudSelect @bind-Value="Despesa.NomeCategoria" Placeholder="Selecione uma Categoria" Label="Nome da Categoria" Variant="Variant.Outlined" Margin="Margin.Normal">
-                    @foreach (var item in ListaDeCategorias)
-                    {
-                        <MudSelectItem Value="item.NomeCategoria">@item.NomeCategoria</MudSelectItem>
-                    }
-                </MudSelect>
-            </MudStack>
-            <MudTextField @bind-Value="Despesa.Descricao" Placeholder="Digite uma descrição..." Label="Descrição" Variant="Variant.Outlined"
-            Margin="Margin.Normal"></MudTextField>
-            <MudTextField @bind-Value="Despesa.Valor" Label="Digite um Valor" Variant="Variant.Outlined" Margin="Margin.Normal"></MudTextField>           
-            <MudDatePicker @bind-Date="Despesa.Data" Placeholder="Selecione a Data" Label="Data" Variant="Variant.Outlined" Margin="Margin.Normal"></MudDatePicker>
-           @*  for="@(() => Despesa.Data)" *@
-            <MudSelect @bind-Value="Despesa.Tipo" Placeholder="Selecione um Tipo de Despesa" Label="Tipo de Despesa" Variant="Variant.Outlined" Margin="Margin.Dense">
-                @foreach (var tipo in ListaDeTipos.ToList())
-                {
-                    <MudSelectItem Value="tipo">@tipo</MudSelectItem>
-                }
-            </MudSelect>
-            <br />
-            <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Editar">Editar Despesa</MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Info" Href="@($"/despesa")">Voltar à Página Inicial</MudButton>
-        </MudCardContent>
-    </MudCard>
-</MudStack>
+<MudPaper Style="height: 800px" Class="d-flex align-top flex-grow-1 border border-solid mud-border-default pa-4 " Elevation="0">    
+    <MudCard Elevation="25" Class="d-flex align-center flex-grow-1 ">
+        <MudStack row>
+             <MudForm Model="@Despesa" @ref="@Form" Style="width: 590px">
+                 <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">EDITAR DESPESA</MudText>            
+                    <br />
+                    <MudCardContent>
+                        <MudNumericField @bind-Value="Despesa.Id" Disabled Label="Código da Despesa" Variant="Variant.Outlined" Margin="Margin.Normal"></MudNumericField>
+                            <MudStack Class="justify-space-between mud-width-full">
+                                <MudSelect @bind-Value="Despesa.NomeCategoria" Placeholder="Selecione uma Categoria" Label="Nome da Categoria" Variant="Variant.Outlined" Margin="Margin.Normal">
+                                    @foreach (var item in ListaDeCategorias)
+                                    {
+                                        <MudSelectItem Value="item.NomeCategoria">@item.NomeCategoria</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudStack>
+                            <MudTextField @bind-Value="Despesa.Descricao" Placeholder="Digite uma descrição..." Label="Descrição" Variant="Variant.Outlined" 
+                            Margin="Margin.Normal"></MudTextField>
+                            <MudTextField @bind-Value="Despesa.Valor" Label="Digite um Valor" Variant="Variant.Outlined" Margin="Margin.Normal"></MudTextField>           
+                            <MudDatePicker @bind-Date="Despesa.Data" Placeholder="Selecione a Data" Label="Data" Variant="Variant.Outlined" Margin="Margin.Normal"></MudDatePicker>          
+                            <MudSelect @bind-Value="Despesa.Tipo" Placeholder="Selecione um Tipo de Despesa" Label="Tipo de Despesa" Variant="Variant.Outlined" Margin="Margin.Dense">
+                                @foreach (var tipo in ListaDeTipos.ToList())
+                                {
+                                    <MudSelectItem Value="tipo">@tipo</MudSelectItem>
+                                }
+                            </MudSelect>
+                            <br />
+                            <MudStack row AlignItems="AlignItems.Center">
+                                <MudButton Variant="Variant.Filled" Color="Color.Info" DropShadow="false" OnClick="Editar">Editar Despesa</MudButton>
+                                <MudButton Variant="Variant.Outlined" Color="Color.Info" DropShadow="false" Href="@($"/despesa")">Voltar à Página Inicial</MudButton>
+                            </MudStack>           
+                    </MudCardContent>
+             </MudForm>
+        </MudStack>
+    </MudCard>    
+</MudPaper>
 @code {
 
     [SupplyParameterFromQuery]
     private int Id { get; set; }
     private Despesa Despesa{ get; set; } = new Despesa();
+    MudForm Form = new();
     private IEnumerable<Categoria> ListaDeCategorias = new List<Categoria>();
     private string[] ListaDeTipos = { "Despesa de Casa", "Despesa de Banco", };
 

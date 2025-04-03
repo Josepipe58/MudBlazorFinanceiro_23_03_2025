@@ -1,29 +1,32 @@
 ﻿@page "/categoria/editar"
 
-<MudStack Style="white-space: 400px" Class="justify-space-between mud-width-full" AlignItems="AlignItems.Stretch" >
-    <MudCard Elevation="25">
-        <MudCardHeader>
-            <CardHeaderContent>
-                <MudText Typo="Typo.h5" Color="Color.Primary">Gerenciar Categoria</MudText>
-            </CardHeaderContent>
-            <CardHeaderActions>
-                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
-            </CardHeaderActions>
-        </MudCardHeader>
-        <MudCardContent>
-            <MudNumericField @bind-Value="Categoria.Id" Disabled Label="Digite um Valor" Variant="Variant.Outlined" Margin="Margin.Normal"></MudNumericField>
-             <MudTextField @bind-Value="Categoria.NomeCategoria" Placeholder="Digite uma categoria..." Label="Nome da Categoria" Variant="Variant.Outlined" 
-            Margin="Margin.Normal"></MudTextField> 
-            <br />
-            <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Editar">Editar Categoria</MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Info" Href="@($"/categoria")">Voltar à Página Inicial</MudButton>
-        </MudCardContent>
+<MudPaper Style="height: 800px" Class="d-flex align-top flex-grow-1 border border-solid mud-border-default pa-4 " Elevation="0">
+    <MudCard Elevation="25" Class="d-flex align-center flex-grow-1">
+        <MudStack row>
+             <MudForm Model="@Categoria" @ref="@Form" Style="width: 590px">
+                 <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">EDITAR CATEGORIA</MudText>            
+                    <br />
+                    <MudCardContent>
+                        <MudNumericField @bind-Value="Categoria.Id" Disabled Label="Código da Despesa" Variant="Variant.Outlined" Margin="Margin.Normal"></MudNumericField>
+                        
+                            <MudTextField @bind-Value="Categoria.NomeCategoria" Placeholder="Digite uma categoria..." Label="Nome da Categoria" Variant="Variant.Outlined" 
+                            Margin="Margin.Normal"></MudTextField>                        
+                            <br />
+                            <MudStack row AlignItems="AlignItems.Center">
+                                <MudButton Variant="Variant.Filled" Color="Color.Info" DropShadow="false" OnClick="Editar">Editar Categoria</MudButton>
+                                <MudButton Variant="Variant.Outlined" Color="Color.Info" DropShadow="false" Href="@($"/categoria")">Voltar à Página Inicial</MudButton>
+                            </MudStack>           
+                    </MudCardContent>
+             </MudForm>
+        </MudStack>
     </MudCard>
-</MudStack>
+</MudPaper>
+
 @code {
     [SupplyParameterFromQuery]
     private int Id { get; set; }
     private Categoria Categoria { get; set; } = new Categoria();   
+    MudForm Form = new();
 
     protected override async Task OnInitializedAsync()
     {

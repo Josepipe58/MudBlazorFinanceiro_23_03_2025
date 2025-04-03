@@ -30,12 +30,14 @@ namespace Application.DependenciesApp
             services.AddScoped<IFinancaService, FinancaService>();
             services.AddScoped<ISaldoFinanceiroCPIService, SaldoFinanceiroCPIService>();
             services.AddScoped<IRelatorioDespesaService, RelatorioDespesaService>();
+            services.AddScoped<IRelatorioFinancaService, RelatorioFinancaService>();
 
             services.AddScoped<ICategoriaRepository, CategoriaRepository>();
             services.AddScoped<IDespesaRepository, DespesaRepository>();
             services.AddScoped<IFinancaRepository, FinancaRepository>();
             services.AddScoped<ISaldoFinanceiroCPIRepository, SaldoFinanceiroCPIRepository>();
             services.AddScoped<IRelatorioDespesaRepository, RelatorioDespesaRepository>();
+            services.AddScoped<IRelatorioFinancaRepository, RelatorioFinancaRepository>();
 
             return services;
         }

@@ -7,10 +7,21 @@ namespace Infrastructure.Repositories
 {
     public class FinancaRepository(AppDbContext context) : Repository<Financa>(context), IFinancaRepository
     {
-        public async Task<IEnumerable<Financa>> ObterFinancaAsync()
+        public async Task<IEnumerable<Financa>> ObterFinancaPorAnoAsync(int ano)
         {
             //_context é herança do Repository.
-            return await _context.TFinancas.OrderByDescending(x => x.Id).ToListAsync();
+            var listaDeFinancas = await _context.TFinancas.Select(x => new Financa()
+            {
+                Id = x.Id,
+                NomeFinanca = x.NomeFinanca,
+                NomeOperacao = x.NomeOperacao,
+                Descricao = x.Descricao,
+                Valor = x.Valor,
+                Tipo = x.Tipo,
+                Data = x.Data,
+            }).Where(x => x.Data.Value.Year == ano).OrderByDescending(x => x.Id).ToListAsync();
+
+            return [.. listaDeFinancas];
         }
     }
 }

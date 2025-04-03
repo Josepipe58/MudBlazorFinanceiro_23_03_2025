@@ -1,24 +1,25 @@
 ﻿@page "/categoria/adicionar"
 
-<MudCard Elevation="25">
-    <MudCardHeader>
-        <CardHeaderContent>
-            <MudText Typo="Typo.h5" Color="Color.Primary">CADASTRAR CATEGORIAS</MudText>
-        </CardHeaderContent>
-        <CardHeaderActions>
-            <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
-        </CardHeaderActions>
-    </MudCardHeader>
-    <MudCardContent>
-        <MudStack Class="justify-space-between mud-width-full">
-            <MudTextField @bind-Value="Categoria.NomeCategoria" Placeholder="Digite uma categoria..." Label="Nome da Categoria" Variant="Variant.Outlined" 
-            Margin="Margin.Dense"></MudTextField>            
-        </MudStack>            
-        <br />
-        <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="Adicionar">Adicionar Categoria</MudButton>
-        <MudButton Variant="Variant.Outlined" Color="Color.Info" Href="@($"/categoria")">Voltar à Página Inicial</MudButton>
-    </MudCardContent>
-</MudCard>
+<MudCard Elevation="25" Class="d-flex align-top flex-grow-1 border border-solid mud-border-default pa-4" >
+    <MudStack row>
+        <MudForm Model="@Categoria" @ref="@Form">
+            <MudText Typo="Typo.h5" Color="Color.Info" Align="Align.Center">ADICIONAR NOVA CATEGORIA</MudText>            
+            <br />
+            <MudStack row AlignItems="AlignItems.Start" Style="width: 1600px">
+               
+                <MudTextField T="string" @bind-Value="Categoria.NomeCategoria" Placeholder="Digite o nome da categoria..." Label="Nome da Categoria" Variant="Variant.Outlined" Style="width: 300px"
+                              Margin="Margin.Dense" Class="mx-4"></MudTextField>                
+            </MudStack>
+            <br />
+            <MudStack row AlignItems="AlignItems.Center">
+                <MudButton Variant="Variant.Filled" Color="Color.Info" DropShadow="false" OnClick="@(() => Adicionar())">Adicionar Categoria</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Info" DropShadow="false" Href="@($"/categoria")" Class="mx-4">Voltar à Página Inicial.</MudButton>
+            </MudStack>
+        </MudForm>
+    </MudStack>
+    <br />    
+
+<MudChip T="string" Style="height:8px; width: 1650px; background-color:steelblue"></MudChip>
 @if (ListaDeCategorias == null)
 {
     <MudProgressCircular Color="Color.Error" Indeterminate="true" />
@@ -26,11 +27,7 @@
 }
 else
 {
-    <MudTable Elevation="0" Striped="false" Items="ListaDeCategorias" FixedHeader="@fixar_cabecalho" FixedFooter="@fixar_rodape" 
-Height="@(fixar_cabecalho || fixar_rodape ?"400px":"")">
-    <ToolBarContent>
-        <MudText Typo="Typo.h5">Lista de Categorias</MudText>  
-    </ToolBarContent>
+    <MudTable Elevation="0" Striped="false" Items="ListaDeCategorias" FixedHeader="@fixar_cabecalho" Height="@(fixar_cabecalho ?"540px":"")">   
     <HeaderContent>        
         <MudTh>Código</MudTh>
         <MudTh>Nome da Categoria</MudTh>       
@@ -38,29 +35,20 @@ Height="@(fixar_cabecalho || fixar_rodape ?"400px":"")">
     <RowTemplate>        
         <MudTd DataLabel="Código">@context.Id</MudTd>
         <MudTd DataLabel="Nome da Categoria">@context.NomeCategoria</MudTd>       
-    </RowTemplate>
-    <FooterContent>
-        <MudTh>Código</MudTh>
-        <MudTh>Nome da Categoria</MudTh>        
-    </FooterContent>
+    </RowTemplate>   
     <PagerContent>
-        <MudTablePager PageSizeOptions="new int[]{25, 50, 100}" />
+        <MudTablePager RowsPerPageString="Linhas por página: " HorizontalAlignment="HorizontalAlignment.Start" PageSizeOptions="new int[]{25, 50, 100}" />
     </PagerContent>
-</MudTable>
-<MudSwitch @bind-Value="fixar_cabecalho" Color="Color.Primary">Fixar Cabeçalho</MudSwitch>
-<MudSwitch @bind-Value="fixar_rodape" Color="Color.Primary">Fixar Rodapé</MudSwitch>}
-
+</MudTable>}
+</MudCard> 
 @code {
     [SupplyParameterFromQuery]
     private int Id { get; set; }
-
     private Categoria Categoria{ get; set; } = new Categoria();
-
     private IEnumerable<Categoria> ListaDeCategorias = new List<Categoria>();
-
+    MudForm Form = new();
     bool fixar_cabecalho = true;
-    bool fixar_rodape = false;  
-
+   
     protected override async Task OnInitializedAsync()
     {        
         await ObterCategorias();

@@ -1,9 +1,72 @@
 ﻿@page "/saldofinanceiro"
 
-@using System.Text.RegularExpressions
-@using System.ComponentModel.DataAnnotations
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Display</title>
+</head>
+<body>
+    <button class="botao-link" name="btn01">
+       Botão Link
+    </button>
+    <div id="container">
+        <div class="item">
+            Testes
+        </div>
+        <div class="item">
+            Testes
+        </div>
+        <div class="item">
+            Testes
+        </div>
+        <div class="item">
+            Testes
+        </div>
+        <div class="item">
+            Testes
+        </div>
+        <div class="item">
+            Testes
+        </div>
+        <div class="item">
+            Testes
+        </div>
+        <div class="item">
+            Testes
+        </div>
+        <div class="item">
+            Testes
+        </div>
+        <div class="item">
+            Testes
+        </div>
+        <div class="item">
+            Testes
+        </div>
+        <div class="item">
+            Testes
+        </div>
+        <div class="item">
+            Testes
+        </div>
+        <div class="item">
+            Testes
+        </div>
+        <div class="item">
+            Testes
+        </div>       
 
-<MudGrid>
+    </div>
+    
+</body>
+</html>
+@*
+    @using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+    <MudGrid>
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
             <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
@@ -45,8 +108,10 @@
         </MudPaper>
     </MudItem>
 </MudGrid>
+*@
+@*
+    @code {
 
-@code {
     bool success;
     string[] errors = { };
     MudTextField<string> pwField1;
@@ -58,7 +123,7 @@
         {
             yield return "Password is required!";
             yield break;
-        }
+            }
         if (pw.Length < 8)
             yield return "Password must be at least of length 8";
         if (!Regex.IsMatch(pw, @"[A-Z]"))
@@ -67,15 +132,19 @@
             yield return "Password must contain at least one lowercase letter";
         if (!Regex.IsMatch(pw, @"[0-9]"))
             yield return "Password must contain at least one digit";
-    }
+        }
 
     private string PasswordMatch(string arg)
     {
         if (pwField1.Value != arg)
             return "Passwords don't match";
         return null;
-    }
+        }
+
+
 }
+*@
+
 
 @* <MudText Typo="Typo.h6" Color="Color.Default" Align="Align.Justify" GutterBottom>
     <p>

@@ -1,5 +1,4 @@
-﻿using Domain.Entities;
-using Domain.EntitiesLists;
+﻿using Domain.EntitiesLists;
 using Domain.Interfaces.RelatorioInterface;
 using Infrastructure.Context;
 

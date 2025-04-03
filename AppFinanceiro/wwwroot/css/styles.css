@@ -1,0 +1,22 @@
+﻿root,
+
+body {
+}
+*{
+    margin: 0px;
+    padding: 0px;    
+}
+#container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+}
+#containerSaldo {
+    display: grid;
+    grid-template-columns: repeat(4, 0fr);
+}
+.item {
+    color: white;
+    font-size: 18px;
+    margin: 10px;
+    width: 250px;    
+}
